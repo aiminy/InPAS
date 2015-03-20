@@ -1,0 +1,14 @@
+CHANGES IN VERSION 0.99.1
+------------------------
+BUG FIXES
+
+    o clear warnings when run check. 
+      Warning: multiple methods tables found for 'species'
+      Warning: multiple methods tables found for ‘organism’
+
+
+CHANGES IN VERSION 0.99.1
+------------------------
+BUG FIXES
+
+    o errors when run BioCheck. import all the package should be import.
