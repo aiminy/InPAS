@@ -162,6 +162,11 @@ utr3UsageEstimation <- function(CPsites, coverage, gp1, gp2=NULL,
                                          UTRusage.long$transcript)]
     PDUItable <- UTRusage.short
     PDUItable$data <- NULL
+    start(PDUItable)[as.character(strand(PDUItable))=="-"] <- 
+        PDUItable$Predicted_Distal_APA[as.character(strand(PDUItable))=="-"]
+    end(PDUItable)[as.character(strand(PDUItable))=="+"] <- 
+        PDUItable$Predicted_Distal_APA[as.character(strand(PDUItable))=="+"]
+    
     UTRusage.short.data <- do.call(rbind, UTRusage.short$data)
     UTRusage.long.data <- do.call(rbind, UTRusage.long$data)
     PDUItable$total.gp1 <- UTRusage.short.data[, gp1]
