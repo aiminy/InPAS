@@ -13,7 +13,7 @@
 }
 \arguments{
     \item{txdb}{an object of \link[GenomicFeatures]{TxDb}}
-    \item{orgDbSYMBOL}{an org SYMBOL to entriz id map}
+    \item{orgDbSYMBOL}{a string indicates org SYMBOL to entriz id map}
     \item{MAX_EXONS_GAP}{maximul exon gap for distal CP site}
 }
 \value{
@@ -28,7 +28,7 @@
     
         library(org.Mm.eg.db)
         
-        utr3Annotation(TxDb.Mmusculus.UCSC.mm10.knownGene, org.Mm.egSYMBOL)
+        utr3Annotation(TxDb.Mmusculus.UCSC.mm10.knownGene, "org.Mm.egSYMBOL")
     }
 }
 \keyword{ misc }
