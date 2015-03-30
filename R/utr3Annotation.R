@@ -5,6 +5,100 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
              start with org and end with egSYMBOL.")
     exons <- ranges(GeneRegionTrack(txdb))
     exons$density <- NULL
+    ## deal with duplicated exon id problem
+    ## for normal one each exon id indicates an unique exon
+    ## sometimes for connected utr5/CDS or CDS/utr3 or utr5/CDS/utr3
+    ## but sometimes, the exon id is not for unique exon, maybe multiple region
+    duplicated.exons.id <- unique(exons$exon[duplicated(exons$exon)])
+    exons.id.dup <- exons[exons$exon %in% duplicated.exons.id]
+    exons.id.dup.start <- split(start(exons.id.dup), exons.id.dup$exon)
+    exons.id.dup.end <- split(end(exons.id.dup), exons.id.dup$exon)
+    exons.id.dup.dist <- mapply(function(start, end){
+        dist <- abs(c(start, 0) - c(0, end))
+        dist <- dist[-c(1,length(dist))]
+        any(dist>1)
+    }, exons.id.dup.start, exons.id.dup.end)
+    if(any(exons.id.dup.dist)){
+        duplicated.transcript.id <- 
+            unique(
+                exons$transcript[
+                    exons$exon %in% 
+                        names(exons.id.dup.dist)[exons.id.dup.dist]])
+        tx.id.dup <- exons[exons$transcript %in% duplicated.transcript.id]
+        tx.id.dup.tx <- split(tx.id.dup$exon, tx.id.dup$transcript)
+        tx.id.dup.start <- split(start(tx.id.dup), tx.id.dup$transcript)
+        tx.id.dup.end <- split(end(tx.id.dup), tx.id.dup$transcript)
+        tx.id.dup.strand <- split(as.character(strand(tx.id.dup)),
+                                  tx.id.dup$transcript)
+        tx.id.dup.dist <- mapply(function(start, end){
+            dist <- abs(c(start, 0) - c(0, end))
+            dist <- dist[-c(1,length(dist))]
+            c(FALSE, dist==1)
+        }, tx.id.dup.start, tx.id.dup.end)
+        ## still need to consider the distance==1 utr5/CDS/utr3
+        tx.id.dup.tx.ex <- mapply(function(.ele, .dist, .strand){
+            .tx <- unique(gsub("_\\d+$", "", .ele))
+            if(length(.tx)>1) stop("unexpected error.")
+            .id <- gsub("^.*_(\\d+)$", "\\1", .ele)
+            idDist <- diff(as.numeric(.id))
+            if(all(idDist<2)){
+                idDist <- c(0, idDist)
+                makeID <- function(x, dis, strand){
+                    xx <- data.frame(x=x, dis=dis, id=1:length(x))
+                    plus <- xx[strand=="+",,drop=FALSE]
+                    minus <- xx[strand=="-",,drop=FALSE]
+                    if(nrow(minus)>0){
+                        minus <- minus[nrow(minus):1,,drop=FALSE]
+                        plus <- rbind(plus, minus)
+                    }
+                    x <- plus[,"x"]
+                    dis <- plus[,"dis"]
+                    pos1 <- x=="1"
+                    pos1 <- pos1 & !dis
+                    pos1 <- which(pos1)
+                    value <- 0:(length(pos1)-1)
+                    length <- c(diff(pos1), length(x)-pos1[length(pos1)]+1)
+                    pre <- rep(value, length)
+                    y <- paste(.tx, pre, x, sep="_")
+                    y[order(plus[,"id"])]
+                }
+                .id <- makeID(.id, .dist, .strand)
+            }else{
+                makeID <- function(x, dis, pre=0){##has bug, that the big number could not exits in later transcript
+                    if(pre==0) x <- cbind(x, 1:length(x))
+                    d <- duplicated(x[,1])
+                    id <- which(dis) - 1
+                    id.cp <- id + 1
+                    id[dis[id]] <- id[dis[id]] -1
+                    id <- id[!dis[id]]
+                    dis.cp <- dis
+                    dis.cp[id.cp] <- !d[id]
+                    d <- d & !dis.cp
+                    y <- cbind(paste(.tx, pre, x[!d, 1], sep="_"), x[!d,2])
+                    y1 <- x[d,, drop=FALSE]
+                    dis <- dis[d]
+                    if(length(y1)>0) y <- rbind(y, Recall(y1, dis, pre+1))
+                    y
+                }
+                .id <- makeID(.id, .dist)
+                .id <- .id[order(as.numeric(.id[,2])), 1]
+            }
+        }, tx.id.dup.tx, tx.id.dup.dist, tx.id.dup.strand)
+        tx.id.dup <- split(tx.id.dup, tx.id.dup$transcript)
+        tx.id.dup <- unlist(tx.id.dup)
+        tx.id.dup.tx.ex <- unlist(tx.id.dup.tx.ex, use.names=FALSE)
+        tx.id.dup.tx <- gsub("^(.*)_\\d+$", "\\1", tx.id.dup.tx.ex)
+        if(!identical(substr(tx.id.dup.tx, 1, nchar(tx.id.dup$transcript)), 
+                      tx.id.dup$transcript))
+            stop("unexpect error (2)")
+        tx.id.dup$exon <- tx.id.dup.tx.ex
+        tx.id.dup$transcript <- tx.id.dup.tx
+        tx.id.uni <- exons[!exons$transcript %in% duplicated.transcript.id]
+        exons <- c(tx.id.uni, tx.id.dup)
+        exons <- exons[order(as.character(seqnames(exons)),
+                             start(exons))]
+    }
+    
     exons.old <- exons ## need to keep all the exons, for genome fragments
     exons <- exons[exons$feature!="ncRNA"]
     utr3.all <- exons[exons$feature=="utr3"]
@@ -117,6 +211,7 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
     
     ## mask 5UTR-CDS and any other region from last 3UTR
     non.utr3 <- getRange(exons.not.utr3.last, "transcript")
+    non.utr3 <- non.utr3[width(non.utr3)<8000] ##why 8000?
     
     removeMask <- function(gr, mask){
         mask.reduce <- reduce(mask)

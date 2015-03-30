@@ -526,11 +526,11 @@ filterIdx <- function(idx, idx1, cov_diff, PolyA_PWM,
         ## re-sort the idx
         ## cov_diff[idx] lower is better (already filtered by valley)
         ## ratio of two fragment smaller is letter
-        ratio <- abs(log2(idx) - log2(length(cov_diff)-idx))
-        ratio <- cut(ratio, breaks=c(0, 3.321928, 6.643856, 9.965784, Inf), 
-                     labels=c(1, 2, 3, 4))
-        ratio <- as.numeric(as.character(ratio))
-        idx <- idx[order(ratio)]
+        ## ratio <- abs(log2(idx) - log2(length(cov_diff)-idx))
+        ## ratio <- cut(ratio, breaks=c(0, 3.321928, 6.643856, 9.965784, Inf), 
+        ##             labels=c(1, 2, 3, 4))
+        ##ratio <- as.numeric(as.character(ratio))
+        ##idx <- idx[order(ratio)]
         idx <- idx[1]
     }
     idx

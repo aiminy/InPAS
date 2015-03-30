@@ -1,3 +1,10 @@
+CHANGES IN VERSION 0.99.5
+------------------------
+BUG FIXES
+
+    o fix the bug in utr3Annotation when multiple transcripts sharing same
+    transcript name by Gviz::GeneRegionTrack
+
 CHANGES IN VERSION 0.99.4
 ------------------------
 BUG FIXES
