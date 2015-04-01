@@ -270,9 +270,9 @@ utr3UsageEstimation <- function(CPsites, coverage, gp1, gp2=NULL,
                           1, function(.d) 
                               fisher.test(matrix(floor(.d), ncol=2))$p.value)
             PDUI.gp1 <- 
-                data$long.mean.gp1/(data$long.mean.gp1 + short.mean.gp1)
+                data$long.mean.gp1/(data$long.mean.gp1 + data$short.mean.gp1)
             PDUI.gp2 <- 
-                data$long.mean.gp2/(data$long.mean.gp2 + short.mean.gp2)
+                data$long.mean.gp2/(data$long.mean.gp2 + data$short.mean.gp2)
             dPDUI <- PDUI.gp2 - PDUI.gp1
             PDUItable$PDUI.gp1 <- PDUI.gp1
             PDUItable$PDUI.gp2 <- PDUI.gp2
