@@ -144,6 +144,15 @@ CPsites <- function(coverage, gp1, gp2=NULL, genome, utr3, window_size=100,
         if(any(rownames(PolyA_PWM)!=c("A", "C", "G", "T"))) 
             stop("rownames of PolyA_PWM must be c(\"A\", \"C\", \"G\", \"T\")")
     }
+    if(missing(coverage) || missing(genome) || missing(utr3))
+        stop("coverage, genome and utr3 is required.")
+    if(class(genome)!="BSgenome")
+        stop("genome must be an object of BSgenome.")
+    if(class(utr3)!="GRanges" | 
+           !all(utr3$id %in% c("utr3", "next.exon.gap", "CDS"))){
+        stop("utr3 must be output of function of utr3Annotation")
+    }
+    utr3 <- utr3[utr3$id!="CDS"]
     MINSIZE <- 10
     hugeData <- class(coverage[[1]])=="character"
     depth.weight <- depthWeight(coverage, hugeData, gp1, gp2)

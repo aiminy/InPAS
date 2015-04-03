@@ -148,6 +148,8 @@ CPsites <- CPsites(coverage=coverage,
 ##step3 Estimate 3UTR usage
 res <- utr3UsageEstimation(CPsites=CPsites, 
                            coverage=coverage, 
+                           utr3=utr3.mm10,
+                           genome=BSgenome.Mmusculus.UCSC.mm10,
                            gp1="Baf3", gp2="UM15", 
                            short_coverage_threshold=15, 
                            long_coverage_threshold=3, 

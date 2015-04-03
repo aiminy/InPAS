@@ -48,7 +48,9 @@ inPAS <- function(bedgraphs, tags, genome, utr3, gp1, gp2, txdb,
                        shift_range=shift_range, BPPARAM=BPPARAM)
     ##step3 calculate usage
     res <- 
-        utr3UsageEstimation(CPsites, coverage, gp1, gp2, 
+        utr3UsageEstimation(CPsites=CPsites, coverage=coverage, 
+                            utr3=utr3, genome=genome, 
+                            gp1=gp1, gp2=gp2, 
                             short_coverage_threshold=short_coverage_threshold, 
                             long_coverage_threshold=long_coverage_threshold, 
                             adjusted.P_val.cutoff=adjusted.P_val.cutoff, 

@@ -388,7 +388,23 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
     next.exons.gap$id <- "next.exon.gap"
     utr3.clean$id <- "utr3"
     
-    utr3.fixed <- c(utr3.clean, next.exons.gap)
+    ##get last CDS for compensation
+    exons.CDS <- exons.old[exons.old$feature=="CDS"]
+    CDS <- exons.CDS[exons.CDS$transcript %in% utr3.clean$transcript]
+    ## keep the last CDS for each transcripts
+    CDS.plus <- CDS[strand(CDS)=="+"]
+    CDS.minus <- CDS[strand(CDS)=="-"]
+    CDS.plus <- CDS.plus[order(-start(CDS.plus))]
+    CDS.minus <- CDS.minus[order(end(CDS.minus))]
+    ###get last CDS
+    CDS.plus <- CDS.plus[!duplicated(CDS.plus$transcript)]
+    CDS.minus <- CDS.minus[!duplicated(CDS.minus$transcript)]
+    CDS.last <- c(CDS.plus, CDS.minus)
+    CDS.last <- CDS.last[match(utr3.clean$transcript, CDS.last$transcript)]
+    mcols(CDS.last) <- mcols(utr3.clean)
+    CDS.last$id <- "CDS"
+    
+    utr3.fixed <- c(utr3.clean, next.exons.gap, CDS.last)
     names(utr3.fixed) <- 
         paste(utr3.fixed$exon, utr3.fixed$symbol, utr3.fixed$id, sep="|")
     utr3.fixed

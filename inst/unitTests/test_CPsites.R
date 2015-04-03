@@ -22,7 +22,8 @@ test_CPsites_utr3Usage<-function(){
     checkEquals(CP[1]$Predicted_Proximal_APA, 399)
     checkEquals(CP[1]$Predicted_Distal_APA, 999)
     checkEquals(CP[1]$type, "novalDistal")
-    res <- utr3UsageEstimation(CP, coverage, gp1="test", gp2=NULL, 
+    res <- utr3UsageEstimation(CP, coverage, genome=genome, 
+                               utr3=utr3, gp1="test", gp2=NULL, 
                                short_coverage_threshold=10, 
                                long_coverage_threshold=5)
     
@@ -40,7 +41,8 @@ test_CPsites_utr3Usage<-function(){
     checkEquals(CP[1]$Predicted_Distal_APA, 999)
     checkEquals(CP[1]$type, "novalDistal")
     
-    res <- utr3UsageEstimation(CP, coverage, gp1="test1", gp2="test2", 
+    res <- utr3UsageEstimation(CP, coverage, genome=genome, 
+                               utr3=utr3, gp1="test1", gp2="test2", 
                                short_coverage_threshold=10, 
                                long_coverage_threshold=5)
     

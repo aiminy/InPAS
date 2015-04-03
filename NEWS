@@ -1,4 +1,11 @@
-CHANGES IN VERSION 0.99.5
+CHANGES IN VERSION 0.99.7
+------------------------
+NEW FEATURES
+
+    o compensation by last CDS but not by ratio.
+
+
+CHANGES IN VERSION 0.99.6
 ------------------------
 BUG FIXES
 

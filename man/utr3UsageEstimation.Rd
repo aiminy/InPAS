@@ -7,7 +7,8 @@
     estimation of 3'UTR usage for short form and long form
 }
 \usage{
-    utr3UsageEstimation(CPsites, coverage, gp1, gp2, 
+    utr3UsageEstimation(CPsites, coverage, genome, utr3, 
+        gp1, gp2=NULL, 
         short_coverage_threshold = 10, 
         long_coverage_threshold = 2, 
         adjusted.P_val.cutoff = 0.05, 
@@ -19,6 +20,8 @@
     \item{CPsites}{outputs of \link{CPsites}}
     \item{coverage}{coverage for each sample, outputs of 
         \link{coverageFromBedGraph}}
+    \item{genome}{an object of \link[BSgenome]{BSgenome}}
+    \item{utr3}{output of \link{utr3Annotation}}
     \item{gp1}{tag names involved in group 1}
     \item{gp2}{tag names involved in group 2}
     \item{short_coverage_threshold}{cutoff threshold for coverage in thre 
@@ -53,7 +56,8 @@
             coverageFromBedGraph(bedgraphs, tags, genome, hugeData=FALSE)
         CP <- CPsites(coverage=coverage, gp1=tags, gp2=NULL, genome=genome, 
             utr3=utr3.mm10, coverage_threshold=5, long_coverage_threshold=5)
-        res <- utr3UsageEstimation(CP, coverage, gp1=tags, gp2=NULL)
+        res <- utr3UsageEstimation(CP, coverage, 
+            utr3.mm10, genome, gp1=tags, gp2=NULL)
     }
 }
 \keyword{ misc }

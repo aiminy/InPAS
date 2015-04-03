@@ -134,7 +134,27 @@ UTR3usage <- function(CPsites, coverage, hugeData, BPPARAM=NULL, phmm=FALSE){
     cov.ranges <- unlist(GRangesList(utr3.regions.chr))
 }
 
-utr3UsageEstimation <- function(CPsites, coverage, gp1, gp2=NULL, 
+coverageCDS <- function(coverage, CDS, genome, gp1, gp2, hugeData){
+    totalCov <- totalCoverage(coverage, genome, hugeData, gp1, gp2)
+    cdsTotalCov <- UTR3TotalCoverage(CDS, totalCov)
+    cdsTotalCov <- lapply(cdsTotalCov, function(.ele){
+        lapply(.ele, function(.e){
+            .e <- colSums(.e)/nrow(.e)
+        })
+    })
+    cdsTotalCov <- do.call(rbind, lapply(cdsTotalCov, do.call, what=rbind))
+    if(!hugeData){
+        gp1 <- cdsTotalCov[, gp1, drop=FALSE]
+        gp2 <- cdsTotalCov[, gp2, drop=FALSE]
+        gp1 <- rowMeans(gp1)
+        gp2 <- rowMeans(gp2)
+        cdsTotalCov <- cbind(gp1=gp1, gp2=gp2)
+    }
+    cdsTotalCov
+}
+
+utr3UsageEstimation <- function(CPsites, coverage, genome, utr3, 
+                                gp1, gp2=NULL, 
                                 short_coverage_threshold=10, 
                                 long_coverage_threshold=2, 
                                 adjusted.P_val.cutoff=0.05, 
@@ -143,6 +163,19 @@ utr3UsageEstimation <- function(CPsites, coverage, gp1, gp2=NULL,
                                 BPPARAM=NULL){
     if(!all(c(gp1,gp2) %in% names(coverage))) 
         stop("gp1 and gp2 must be in names of coverage")
+    if(missing(coverage) || missing(CPsites))
+        stop("CPsites and coverage is required.")
+    if(length(gp2)>0){
+        if(missing(utr3) || missing(genome)){
+            stop("utr3 and genome is required.")
+        }
+        if(class(genome)!="BSgenome")
+            stop("genome must be an object of BSgenome.")
+        if(class(utr3)!="GRanges" | 
+               !all(utr3$id %in% c("utr3", "next.exon.gap", "CDS"))){
+            stop("utr3 must be output of function of utr3Annotation")
+        }
+    }
     hugeData <- class(coverage[[1]])=="character"
     if(length(c(gp1, gp2))==1){
         coverage <- coverage[c(gp1, gp2)]
@@ -173,6 +206,7 @@ utr3UsageEstimation <- function(CPsites, coverage, gp1, gp2=NULL,
     PDUItable$long.gp1 <- UTRusage.long.data[, gp1]
     PDUItable$short.gp1 <- PDUItable$total.gp1 - PDUItable$long.gp1
     PDUItable$short.gp1[PDUItable$short.gp1<0] <- 0
+    
     if(length(c(gp1, gp2))==1){
         PDUItable$data2 <- NULL
         PDUItable$test_status <- PDUItable$total.gp1>long_coverage_threshold & 
@@ -240,17 +274,47 @@ utr3UsageEstimation <- function(CPsites, coverage, gp1, gp2=NULL,
         
         data <- as.data.frame(mcols(PDUItable))
         if(is.character(gp2)){
-            ##compensation
-            ids <- data$short.mean.gp1==0 & data$short.mean.gp2==0
-            ratio.gp1 <- data$long.mean.gp1/data$total.mean.gp1
-            ratio.gp2 <- data$long.mean.gp2/data$total.mean.gp2
-            ratio <- ifelse(ratio.gp1>ratio.gp2, ratio.gp1, ratio.gp2)
-            short.mean.gp1 <- data$total.mean.gp1 * ratio - data$long.mean.gp1
-            short.mean.gp2 <- data$total.mean.gp2 * ratio - data$long.mean.gp2
-            short.mean.gp1[short.mean.gp1<0] <- 0
-            short.mean.gp2[short.mean.gp2<0] <- 0
-            PDUItable$short.mean.gp1[ids] <- short.mean.gp1[ids]
-            PDUItable$short.mean.gp2[ids] <- short.mean.gp2[ids]
+            ##compensation by last CDS
+            ids <- data$short.mean.gp1<=0 & data$short.mean.gp2<=0
+            if(sum(ids)>0){
+                ##get coverage of last CDS
+                CDS <- utr3[utr3$id=="CDS"]
+                cds.id <- match(data$transcript[ids], CDS$transcript)
+                cds.id.na <- is.na(cds.id)
+                CDS <- CDS[cds.id[!cds.id.na]]
+                if(length(CDS)>0){
+                    ##use last CDS coverage replace the short.mean.gp1 and gp2
+                    CDS.cov <- coverageCDS(coverage, CDS, genome, 
+                                           gp1, gp2, hugeData)
+                    CDS.cov <- CDS.cov[match(names(CDS), rownames(CDS.cov)), , 
+                                       drop=FALSE]
+                    rownames(CDS.cov) <- names(CDS)
+                    CDS.cov[is.na(CDS.cov)] <- 0
+                    PDUItable$short.mean.gp1[ids][!cds.id.na] <- CDS.cov[,"gp1"] - 
+                        PDUItable$long.mean.gp1[ids][!cds.id.na]
+                    PDUItable$short.mean.gp2[ids][!cds.id.na] <- CDS.cov[,"gp2"] - 
+                        PDUItable$long.mean.gp2[ids][!cds.id.na]
+                    PDUItable$short.mean.gp1[
+                        is.na(PDUItable$short.mean.gp1) | 
+                            PDUItable$short.mean.gp1<0] <- 0
+                    PDUItable$short.mean.gp2[
+                        is.na(PDUItable$short.mean.gp2) | 
+                            PDUItable$short.mean.gp2<0] <- 0
+                }
+            }
+            
+            ##compensation by ratio
+            #data <- as.data.frame(mcols(PDUItable))
+            #ids <- data$short.mean.gp1<=0 & data$short.mean.gp2<=0
+            #ratio.gp1 <- data$long.mean.gp1/data$total.mean.gp1
+            #ratio.gp2 <- data$long.mean.gp2/data$total.mean.gp2
+            #ratio <- ifelse(ratio.gp1>ratio.gp2, ratio.gp1, ratio.gp2)
+            #short.mean.gp1 <- data$total.mean.gp1 * ratio - data$long.mean.gp1
+            #short.mean.gp2 <- data$total.mean.gp2 * ratio - data$long.mean.gp2
+            #short.mean.gp1[short.mean.gp1<0] <- 0
+            #short.mean.gp2[short.mean.gp2<0] <- 0
+            #PDUItable$short.mean.gp1[ids] <- short.mean.gp1[ids]
+            #PDUItable$short.mean.gp2[ids] <- short.mean.gp2[ids]
             PDUItable$total.mean.gp1[is.na(PDUItable$total.mean.gp1)] <- 0
             PDUItable$total.mean.gp2[is.na(PDUItable$total.mean.gp2)] <- 0
             PDUItable$long.mean.gp1[is.na(PDUItable$long.mean.gp1)] <- 0
@@ -258,10 +322,12 @@ utr3UsageEstimation <- function(CPsites, coverage, gp1, gp2=NULL,
             PDUItable$short.mean.gp1[is.na(PDUItable$short.mean.gp1)] <- 0
             PDUItable$short.mean.gp2[is.na(PDUItable$short.mean.gp2)] <- 0
             PDUItable$test_status <- 
-                PDUItable$total.mean.gp1>long_coverage_threshold & 
-                PDUItable$total.mean.gp2>long_coverage_threshold & 
-                PDUItable$long.mean.gp1>long_coverage_threshold & 
-                PDUItable$long.mean.gp2>long_coverage_threshold
+                (PDUItable$total.mean.gp1>=long_coverage_threshold | 
+                     PDUItable$total.mean.gp2>=long_coverage_threshold) & 
+                (PDUItable$long.mean.gp1>=long_coverage_threshold | 
+                     PDUItable$long.mean.gp2>=long_coverage_threshold) &
+                !(PDUItable$total.mean.gp1<long_coverage_threshold & 
+                      PDUItable$long.mean.gp1<long_coverage_threshold)
             data <- as.data.frame(mcols(PDUItable))
             pval <- apply(data[,c("long.mean.gp1", 
                                   "short.mean.gp1", 
