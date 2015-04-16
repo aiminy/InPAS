@@ -1,0 +1,18 @@
+import(S4Vectors)
+importFrom(AnnotationDbi, mget)
+import(limma)
+import(IRanges)
+importFrom(GenomeInfoDb, seqlengths)
+import(GenomicRanges)
+import(GenomicFeatures)
+importFrom(BSgenome, getSeq, matchPWM)
+import(BiocParallel)
+importFrom(Gviz, GeneRegionTrack)
+importFrom(cleanUpdTSeq, buildFeatureVector, predictTestSet)
+importFrom(seqinr, s2c, GC)
+export(coverageFromBedGraph,
+       CPsites,
+       utr3Annotation,
+       utr3UsageEstimation,
+       inPAS,
+       usage4plot)

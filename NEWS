@@ -1,0 +1,46 @@
+CHANGES IN VERSION 0.99.7
+------------------------
+NEW FEATURES
+
+    o compensation by last CDS but not by ratio.
+
+
+CHANGES IN VERSION 0.99.6
+------------------------
+BUG FIXES
+
+    o fix the bug in utr3UsageEstimation in calculating of PDUI
+
+CHANGES IN VERSION 0.99.5
+------------------------
+BUG FIXES
+
+    o fix the bug in utr3Annotation when multiple transcripts sharing same
+    transcript name by Gviz::GeneRegionTrack
+
+CHANGES IN VERSION 0.99.4
+------------------------
+BUG FIXES
+
+    o fix the bug in documentation of utr3Annotation
+
+CHANGES IN VERSION 0.99.3
+------------------------
+BUG FIXES
+
+    o fix the output ranges from short form to whole 3UTR
+
+CHANGES IN VERSION 0.99.2
+------------------------
+BUG FIXES
+
+    o clear warnings when run check. 
+      Warning: multiple methods tables found for 'species'
+      Warning: multiple methods tables found for ‘organism’
+
+
+CHANGES IN VERSION 0.99.1
+------------------------
+BUG FIXES
+
+    o errors when run BioCheck. import all the package should be import.
