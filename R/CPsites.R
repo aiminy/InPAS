@@ -72,6 +72,7 @@ UTR3TotalCoverage <- function(utr3, totalCov,
     utr3.s <- split(utr3, as.character(seqnames(utr3)))
     ##smooth methods
     fft.smooth <- function(sn, p){#
+        if(length(sn)<=p) return(sn)
         sn.fft <- fft(sn)#
         sn.fft[p:length(sn.fft)] <- 0+0i#
         sn.ifft = fft(sn.fft, inverse = TRUE)/length(sn.fft)#
@@ -245,6 +246,7 @@ CPsite_estimation <- function(chr.cov, utr3, MINSIZE, window_size,
         chr.utr3TotalCov <- mapply(function(.covList, .start, .end, .property){
             #set names for each position 
             .posList <- .start:.end
+            if(length(dim(.covList))==0) .covList <- t(.covList)
             rownames(.covList) <- paste(.property, .posList, sep="_SEP_")
             .covList
         }, chr.utr3TotalCov, start(.UTR), end(.UTR), .UTR$id, SIMPLIFY=FALSE)
