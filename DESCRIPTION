@@ -1,18 +1,18 @@
 Package: InPAS
 Type: Package
 Title: Identification of Novel alternative PolyAdenylation Sites (PAS)
-Version: 1.1.1
+Version: 1.1.2
 Date: 2014-09-12
 Authors@R: c(person("Jianhong Ou", "Developer", role = c("aut", "cre"),
         email = "jianhong.ou@umassmed.edu"), person("Lihua Julie Zhu",
         "Developer", role = "aut", email = "Julie.Zhu@umassmed.edu"))
 Author: Jianhong Ou, Sung Mi Park, Michael R. Green and Lihua Julie Zhu
 Maintainer: Jianhong Ou <jianhong.ou@umassmed.edu>
-Description: Alternative polyadenylation (APA) is one of the important
-        post-transcriptional regulation mechanism which occurs in most
-        human genes. InPAS, developed form DaPars algorithm, predicts
-        and estimates APA and cleavage sites for mRNA-seq data. It uses
-        the power of cleanUpdTSeq to adjust cleavage sites.
+Description: Alternative polyadenylation (APA) is one of the important 
+             post-transcriptional regulation mechanisms which occurs in 
+             most human genes. InPAS facilitates the discovery of novel 
+             APA sites from RNAseq data. It leverages cleanUpdTSeq to fine 
+             tune identified APA sites.
 biocViews: RNASeq, Sequencing, AlternativeSplicing, Coverage,
         DifferentialSplicing, GeneRegulation, Transcription
 License: GPL (>= 2)
