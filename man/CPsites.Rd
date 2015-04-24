@@ -9,11 +9,11 @@
 \usage{
     CPsites(coverage, gp1, gp2=NULL, genome, utr3, 
         window_size=100, search_point_START=50, search_point_END=NA, 
-        cutStart=100, cutEnd=0, search_distal_polyA_end=FALSE, 
+        cutStart=window_size, cutEnd=0, search_distal_polyA_end=FALSE, 
         coverage_threshold=5, long_coverage_threshold=2, 
         gcCompensation=NA, mappabilityCompensation=NA, 
         FFT=FALSE, fft.sm.power=20, 
-        PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, shift_range=25,
+        PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, shift_range=window_size,
         BPPARAM=NULL)
 }
 \arguments{

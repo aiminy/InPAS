@@ -132,12 +132,12 @@ UTR3TotalCoverage <- function(utr3, totalCov,
 
 CPsites <- function(coverage, gp1, gp2=NULL, genome, utr3, window_size=100, 
                     search_point_START=50, search_point_END=NA, 
-                    cutStart=100, cutEnd=0, search_distal_polyA_end=FALSE, 
+                    cutStart=window_size, cutEnd=0, search_distal_polyA_end=FALSE, 
                     coverage_threshold=5, long_coverage_threshold=2, 
                     gcCompensation=NA, mappabilityCompensation=NA, 
                     FFT=FALSE, fft.sm.power=20, 
                     PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, 
-                    shift_range=25, BPPARAM=NULL){
+                    shift_range=window_size, BPPARAM=NULL){
     if(!all(c(gp1,gp2) %in% names(coverage))) 
         stop("gp1 and gp2 must be in names of coverage")
     if(!is.na(PolyA_PWM)[1]){
@@ -358,7 +358,7 @@ CPsite_estimation <- function(chr.cov, utr3, MINSIZE, window_size,
                                        next.exon.gap[1:next.exon.gap.abun.1], 
                                        as.character(seqnames(curr_UTR.ele))[1],
                                        as.character(strand(curr_UTR.ele))[1], 
-                                       genome, window_size)
+                                       genome, shift_range)
             }
             
             saved.proximal.apa <- 
@@ -505,15 +505,22 @@ filterIdx <- function(idx, idx1, cov_diff, PolyA_PWM,
                        idx, PWM=PolyA_PWM, genome=genome) 
     }
     if(class(classifier)=="PASclassifier" && length(idx)>0){
+        idx.gp <- 1:length(idx)
         if(is.na(window_size)){
             if(shift_range>10){
                 idx_lo <- idx - shift_range
                 idx_up <- idx + shift_range
-                idx <- as.integer(mapply(function(a, b, c) 
-                    unique(sort(c(seq(a, b, by=10), c))), idx_lo, idx_up, idx))
-                idx <- 
-                    unique(idx[idx>=search_point_START & 
-                                   idx < length(cov_diff)])
+                idx <- mapply(function(a, b, c) 
+                    unique(sort(c(seq(a, b, by=10), c))), 
+                    idx_lo, idx_up, idx, SIMPLIFY=FALSE)
+                idx.gp <- rep(1:length(idx_lo), sapply(idx, length))
+                idx <- as.integer(unlist(idx))
+                idx <- cbind(idx, idx.gp)
+                idx <- idx[idx[,1]>=search_point_START & 
+                               idx[,1] < length(cov_diff), ]
+                idx <- idx[!duplicated(idx[,1]), ]
+                idx.gp <- idx[,2]
+                idx <- idx[,1]
             }
             pos <- if(strand=="+") start + idx - 1 else start - idx + 1
         }else{
@@ -523,7 +530,7 @@ filterIdx <- function(idx, idx1, cov_diff, PolyA_PWM,
                     start - floor((idx - .5) * window_size)
                 }
         }
-        idx <- PAscore2(seqname, pos, strand, idx, 
+        idx <- PAscore2(seqname, pos, strand, idx, idx.gp,
                         genome, classifier, classifier_cutoff)
     }
     
@@ -590,7 +597,7 @@ PAscore <- function(seqname, pos, str, idx, PWM, genome, ups=50, dws=50){
 }
 
 
-PAscore2 <- function(seqname, pos, str, idx, 
+PAscore2 <- function(seqname, pos, str, idx, idx.gp,
                      genome, classifier, classifier_cutoff){
     if(length(pos)<1){
         return(NULL)
@@ -613,7 +620,12 @@ PAscore2 <- function(seqname, pos, str, idx,
                                         classifier=classifier, 
                                         outputFile=NULL, 
                                         assignmentCutoff=classifier_cutoff))
-    idx[pred.prob.test[, "pred.class"]==1]
+    pred.prob.test <- cbind(pred.prob.test[,1:4], idx, idx.gp)
+    pred.prob.test <- pred.prob.test[pred.prob.test[, "pred.class"]==1, ]
+    pred.prob.test <- pred.prob.test[order(pred.prob.test[, "idx.gp"],
+                                           -pred.prob.test[, "prob True"]), ]
+    pred.prob.test <- pred.prob.test[!duplicated(pred.prob.test[, "idx.gp"]), ]
+    pred.prob.test[,"idx"]
 }
 
 ##remove utr3---___---utr3, need to improve.
@@ -650,7 +662,8 @@ searchPolyAfromEnd <- function(classifier, classifier_cutoff,
                   coor[1])
     pos <- seq(start, end, by=ifelse(strand=="+", -10, 10))
     idx <- match(pos, coor)
-    idx1 <- PAscore2(chrom, pos, strand, idx, genome, 
+    idx.gp <- 1:length(idx)
+    idx1 <- PAscore2(chrom, pos, strand, idx, idx.gp, genome, 
                      classifier, classifier_cutoff)
     if(length(idx1)>0) {
         idx1 <- idx1[1]

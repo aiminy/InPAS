@@ -43,38 +43,38 @@ BiocStyle::latex()
     such as TCGA. For this reason, the need to develop the algorithm which 
     can identify APA from conventional RNA-seq data has been emerged. 
 
-    Recently, two groups reported the methods how to mine APA usage from 
-    RNA-seq.
-
-    Lu et al. developed the algorithm based on a Poisson hidden Markov 
-    model (PHMM) to identify potential APA in human liver and brain 
-    cortex tissues. This method is applicable to both single sample and 
-    pooled samples. However, if there are two or more groups of samples 
-    to compare, each group should be run separately. Moreover, as the 
-    limitation of the algorithm, each run of different group can result 
-    different APA prediction in a same gene, so it is hardly possible 
-    to compare the results from different groups. Furthermore, this 
-    method hardly can find the novel distal cleavage site.
-
-    Recently, Xu et al. developed a novel algorithm, DaPars, which 
-    is possible for \textit{de novo} identification of dynamic APAs 
-    from RNA-seq data. This method can be used to find not only the 
-    novel proximal site but also the novel distal site. The limitation 
-    of this method is it can only handle two group dataset, but not 
-    one group dataset. Moreover, as DaPars algorithm regards the 
-    last exon as 3'UTR, it can lead biased detection of more proximal 
-    site than distal site. 
-
-    Here, to overcome this limitations, we developed InPAS (
-    \underline{I}dentification of \underline{N}ovel alternative
-    \underline{P}oly\underline{A}denylation \underline{S}ites), a 
-    bioconductor tool for \textit{de novo} cleavage site discovery. 
-    Though InPAS was developed form DaPars algorithm, there are several 
-    improvements compared to DaPars.  It uses the power of 
-    \Rpackage{cleanUpdTSeq} to adjust cleavage site. Moreover, 
-    it extracts annotation from \Rpackage{GenomicFeatures} to make 
-    sure the correct 3'UTR ranges to prevent biased proximal 
-    site detection. 
+%     Recently, two groups reported the methods how to mine APA usage from 
+%     RNA-seq.
+% 
+%     Lu et al. developed the algorithm based on a Poisson hidden Markov 
+%     model (PHMM) to identify potential APA in human liver and brain 
+%     cortex tissues. This method is applicable to both single sample and 
+%     pooled samples. However, if there are two or more groups of samples 
+%     to compare, each group should be run separately. Moreover, as the 
+%     limitation of the algorithm, each run of different group can result 
+%     different APA prediction in a same gene, so it is hardly possible 
+%     to compare the results from different groups. Furthermore, this 
+%     method hardly can find the novel distal cleavage site.
+% 
+%     Recently, Xu et al. developed a novel algorithm, DaPars, which 
+%     is possible for \textit{de novo} identification of dynamic APAs 
+%     from RNA-seq data. This method can be used to find not only the 
+%     novel proximal site but also the novel distal site. The limitation 
+%     of this method is it can only handle two group dataset, but not 
+%     one group dataset. Moreover, as DaPars algorithm regards the 
+%     last exon as 3'UTR, it can lead biased detection of more proximal 
+%     site than distal site. 
+% 
+%     Here, to overcome this limitations, we developed InPAS (
+%     \underline{I}dentification of \underline{N}ovel alternative
+%     \underline{P}oly\underline{A}denylation \underline{S}ites), a 
+%     bioconductor tool for \textit{de novo} cleavage site discovery. 
+%     Though InPAS was developed form DaPars algorithm, there are several 
+%     improvements compared to DaPars.  It uses the power of 
+%     \Rpackage{cleanUpdTSeq} to adjust cleavage site. Moreover, 
+%     it extracts annotation from \Rpackage{GenomicFeatures} to make 
+%     sure the correct 3'UTR ranges to prevent biased proximal 
+%     site detection. 
 
     The workflow for InPAS is:
 
@@ -190,24 +190,24 @@ inPAS(bedgraphs=bedgraphs[1], tags=c("Baf3"),
               PolyA_PWM=pwm, classifier=classifier)
 @
 
-\section{References}
-    Lu J, Bushel PR. Dynamic expression of 3' UTRs revealed by 
-    Poisson hidden Markov modeling of RNA-Seq: implications in 
-    gene expression profiling. Gene. 2013 Sep 25;527(2):616-23. 
-    doi: 10.1016/j.gene.2013.06.052. Epub 2013 Jul 9. 
-    PubMed PMID: 23845781; PubMed Central PMCID: PMC3902974.
-
-    Xia Z, Donehower LA, Cooper TA, Neilson JR, Wheeler DA, 
-    Wagner EJ, Li W. Dynamic analyses of alternative 
-    polyadenylation from RNA-seq reveal a 3'-UTRlandscape 
-    across seven tumour types. Nat Commun. 2014 Nov 20;5:5274. 
-    doi:10.1038/ncomms6274. PubMed PMID: 25409906.
-
-    Sheppard S, Lawson ND, Zhu LJ. Accurate identification of 
-    polyadenylation sites from 3' end deep sequencing using a 
-    naive Bayes classifier. Bioinformatics. 2013 Oct 15;29(20):2564-71. 
-    doi: 10.1093/bioinformatics/btt446. Epub 2013 Aug 20. 
-    PubMed PMID: 23962617; PubMed Central PMCID: PMC3789547.
+% \section{References}
+%     Lu J, Bushel PR. Dynamic expression of 3' UTRs revealed by 
+%     Poisson hidden Markov modeling of RNA-Seq: implications in 
+%     gene expression profiling. Gene. 2013 Sep 25;527(2):616-23. 
+%     doi: 10.1016/j.gene.2013.06.052. Epub 2013 Jul 9. 
+%     PubMed PMID: 23845781; PubMed Central PMCID: PMC3902974.
+% 
+%     Xia Z, Donehower LA, Cooper TA, Neilson JR, Wheeler DA, 
+%     Wagner EJ, Li W. Dynamic analyses of alternative 
+%     polyadenylation from RNA-seq reveal a 3'-UTRlandscape 
+%     across seven tumour types. Nat Commun. 2014 Nov 20;5:5274. 
+%     doi:10.1038/ncomms6274. PubMed PMID: 25409906.
+% 
+%     Sheppard S, Lawson ND, Zhu LJ. Accurate identification of 
+%     polyadenylation sites from 3' end deep sequencing using a 
+%     naive Bayes classifier. Bioinformatics. 2013 Oct 15;29(20):2564-71. 
+%     doi: 10.1093/bioinformatics/btt446. Epub 2013 Aug 20. 
+%     PubMed PMID: 23962617; PubMed Central PMCID: PMC3789547.
 
 \section{Session Info}
 <<sessionInfo, results=tex, print=TRUE>>=
