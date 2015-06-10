@@ -7,10 +7,13 @@
     predict the alternative cleavage and polyadenylation (CP or APA) site. 
 }
 \usage{
-    CPsites(coverage, gp1, gp2=NULL, genome, utr3, 
+    CPsites(coverage, groupList=NULL, genome, utr3, 
         window_size=100, search_point_START=50, search_point_END=NA, 
-        cutStart=window_size, cutEnd=0, search_distal_polyA_end=FALSE, 
+        cutStart=window_size, cutEnd=0, adjust_distal_polyA_end=TRUE, 
         coverage_threshold=5, long_coverage_threshold=2, 
+        background=c("same_as_long_coverage_threshold", 
+                     "1K", "5K", "10K", "50K"),
+        txdb=NA,
         gcCompensation=NA, mappabilityCompensation=NA, 
         FFT=FALSE, fft.sm.power=20, 
         PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, shift_range=window_size,
@@ -19,8 +22,7 @@
 \arguments{
     \item{coverage}{coverage for each sample, 
         output of \link{coverageFromBedGraph}}
-    \item{gp1}{tag names involved in group 1}
-    \item{gp2}{tag names involved in group 2}
+    \item{groupList}{group list of tag names}
     \item{genome}{an object of \link[BSgenome]{BSgenome}}
     \item{utr3}{output of \link{utr3Annotation}}
     \item{window_size}{window size for noval distal position searching and 
@@ -31,12 +33,14 @@
         before search, 0.1 means 10 percent, 25 means cut first 25.}
     \item{cutEnd}{how many nucleotides should be removed  from the end before 
         search, 0.1 means 10 percent.}
-    \item{search_distal_polyA_end}{If true, adjust distal polyA end by 
+    \item{adjust_distal_polyA_end}{If true, adjust distal polyA end by 
         \link[cleanUpdTSeq]{cleanUpdTSeq}}
     \item{coverage_threshold}{cutoff coverage threshold for fist 100 
         nucleotides}
     \item{long_coverage_threshold}{cutoff threshold for coverage in thre region
         of long form}
+    \item{background}{the range for calculating cutoff threshold of local background}
+    \item{txdb}{an object of \link[GenomicFeatures]{TxDb}}
     \item{gcCompensation}{GC content compensation vector}
     \item{mappabilityCompensation}{mappability compensation vector}
     \item{FFT}{use Fast Fourier Transform Algorithm to smooth the data or not. 

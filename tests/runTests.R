@@ -1,3 +1,6 @@
 require("BSgenome.Mmusculus.UCSC.mm10") || stop("can not load BSgenome.")
+require("BSgenome.Hsapiens.UCSC.hg19") || stop("can not load BSgenome.")
+require("TxDb.Mmusculus.UCSC.mm10.knownGene") || stop("can not load TxDb")
 require("rtracklayer") || stop("can not load rtracklayer.")
+require("limma") || stop("can not load limma")
 BiocGenerics:::testPackage("InPAS")

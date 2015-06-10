@@ -134,29 +134,34 @@ coverage <- coverageFromBedGraph(bedgraphs,
                                  hugeData=hugeData)
 
 ##step2 Predict cleavage sites
-CPsites <- CPsites(coverage=coverage, 
-                   gp1="Baf3", gp2="UM15", 
-                   genome=BSgenome.Mmusculus.UCSC.mm10,
-                   utr3=utr3.mm10, 
-                   search_point_START=200, 
-                   cutEnd=.2, 
-                   long_coverage_threshold=3,
-                   PolyA_PWM=pwm, 
-                   classifier=classifier,
-                   shift_range=50)
+CPs <- CPsites(coverage=coverage, 
+               genome=BSgenome.Mmusculus.UCSC.mm10,
+               utr3=utr3.mm10, 
+               search_point_START=200, 
+               cutEnd=.2, 
+               long_coverage_threshold=3,
+               background="10K",
+               txdb=TxDb.Mmusculus.UCSC.mm10.knownGene,
+               PolyA_PWM=pwm, 
+               classifier=classifier,
+               shift_range=50)
 
 ##step3 Estimate 3UTR usage
-res <- utr3UsageEstimation(CPsites=CPsites, 
-                           coverage=coverage, 
-                           utr3=utr3.mm10,
-                           genome=BSgenome.Mmusculus.UCSC.mm10,
-                           gp1="Baf3", gp2="UM15", 
-                           short_coverage_threshold=15, 
-                           long_coverage_threshold=3, 
-                           adjusted.P_val.cutoff=0.05, 
-                           dPDUI_cutoff=0.3, 
-                           PDUI_logFC_cutoff=0.59)
-res
+res <- testUsage(CPsites=CPs, 
+                 coverage=coverage, 
+                 genome=BSgenome.Mmusculus.UCSC.mm10,
+                 utr3=utr3.mm10, 
+                 method="fisher.exact",
+                 gp1="Baf3", gp2="UM15")
+
+##step4 view the results
+as(res, "GRanges") 
+
+filterRes(res, gp1="Baf3", gp2="UM15",
+          background_coverage_threshold=3,
+          adj.P.Val_cutoff=0.05, 
+          dPDUI_cutoff=0.3, 
+          PDUI_logFC_cutoff=0.59)
 @
 
     The process described above can be done in one step.
@@ -172,22 +177,28 @@ if(interactive()){
               cutStart=0, cutEnd=.2, 
               hugeData=FALSE,
               shift_range=50,
-              PolyA_PWM=pwm, classifier=classifier)
+              PolyA_PWM=pwm, classifier=classifier,
+              method="fisher.exact",
+              adj.P.Val_cutoff=0.05,
+              dPDUI_cutoff=0.3, 
+              PDUI_logFC_cutoff=0.59)
 }
 @
 
     InPAS can handle single group data.
 <<SingleGroupData>>=
 inPAS(bedgraphs=bedgraphs[1], tags=c("Baf3"), 
-              genome=BSgenome.Mmusculus.UCSC.mm10, 
-              utr3=utr3.mm10, gp1="Baf3", gp2=NULL,
-              txdb=TxDb.Mmusculus.UCSC.mm10.knownGene,
-              search_point_START=200,
-              short_coverage_threshold=15,
-              long_coverage_threshold=3, 
-              cutStart=0, cutEnd=.2, 
-              hugeData=FALSE, 
-              PolyA_PWM=pwm, classifier=classifier)
+      genome=BSgenome.Mmusculus.UCSC.mm10, 
+      utr3=utr3.mm10, gp1="Baf3", gp2=NULL,
+      txdb=TxDb.Mmusculus.UCSC.mm10.knownGene,
+      search_point_START=200,
+      short_coverage_threshold=15,
+      long_coverage_threshold=3, 
+      cutStart=0, cutEnd=.2, 
+      hugeData=FALSE, 
+      PolyA_PWM=pwm, classifier=classifier,
+      method="singleSample",
+      adj.P.Val_cutoff=0.05)
 @
 
 % \section{References}

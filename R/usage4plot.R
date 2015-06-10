@@ -1,5 +1,5 @@
 usage4plot <- function(gr, coverage, proximalSites, genome, 
-                       gp1, gp2, 
+                       groupList=NULL, 
                        gcCompensation=NA, mappabilityCompensation=NA, 
                        FFT=FALSE, fft.sm.power=20){
     if(class(gr)!="GRanges") stop("gr must be an object of GRanges")
@@ -16,7 +16,7 @@ usage4plot <- function(gr, coverage, proximalSites, genome,
     
     hugeData <- class(coverage[[1]])=="character"
     depth.weight <- depthWeight(coverage, hugeData)
-    totalCov <- totalCoverage(coverage, genome, hugeData, gp1, gp2)
+    totalCov <- totalCoverage(coverage, genome, hugeData, groupList)
     ## get coverage for each region
     utr3TotalCov <- 
         UTR3TotalCoverage(gr, totalCov, 

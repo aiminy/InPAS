@@ -7,8 +7,7 @@
     prepare coverage data and fitting data for plot
 }
 \usage{
-    usage4plot(gr, coverage, proximalSites, genome, 
-               gp1, gp2, 
+    usage4plot(gr, coverage, proximalSites, genome, groupList, 
                gcCompensation=NA, mappabilityCompensation=NA, 
                FFT=FALSE, fft.sm.power=20)
 }
@@ -18,8 +17,7 @@
     \item{coverage}{coverage for each sample}
     \item{proximalSites}{proximal sites}
     \item{genome}{an object of \link[BSgenome]{BSgenome}}
-    \item{gp1}{tag names involved in group 1}
-    \item{gp2}{tag names involved in group 2}
+    \item{groupList}{the list of sample names}
     \item{gcCompensation}{GC content compensation vector}
     \item{mappabilityCompensation}{mappability compensation vector}
     \item{FFT}{use FFT to smooth the data or not. default: FALSE}

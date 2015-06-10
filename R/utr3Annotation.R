@@ -43,7 +43,7 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
             idDist <- diff(as.numeric(.id))
             if(all(idDist<2)){
                 idDist <- c(0, idDist)
-                makeID <- function(x, dis, strand){
+                makeID.1 <- function(x, dis, strand){
                     xx <- data.frame(x=x, dis=dis, id=1:length(x))
                     plus <- xx[strand=="+",,drop=FALSE]
                     minus <- xx[strand=="-",,drop=FALSE]
@@ -62,9 +62,9 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
                     y <- paste(.tx, pre, x, sep="_")
                     y[order(plus[,"id"])]
                 }
-                .id <- makeID(.id, .dist, .strand)
+                .id <- makeID.1(.id, .dist, .strand)
             }else{
-                makeID <- function(x, dis, pre=0){##has bug, that the big number could not exits in later transcript
+                makeID.2 <- function(x, dis, pre=0){##has bug, that the big number could not exits in later transcript
                     if(pre==0) x <- cbind(x, 1:length(x))
                     d <- duplicated(x[,1])
                     id <- which(dis) - 1
@@ -80,7 +80,7 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
                     if(length(y1)>0) y <- rbind(y, Recall(y1, dis, pre+1))
                     y
                 }
-                .id <- makeID(.id, .dist)
+                .id <- makeID.2(.id, .dist)
                 .id <- .id[order(as.numeric(.id[,2])), 1]
             }
         }, tx.id.dup.tx, tx.id.dup.dist, tx.id.dup.strand)
