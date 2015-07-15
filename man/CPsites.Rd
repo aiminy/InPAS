@@ -33,10 +33,12 @@
         search, 0.1 means 10 percent.}
     \item{search_distal_polyA_end}{If true, adjust distal polyA end by 
         \link[cleanUpdTSeq]{cleanUpdTSeq}}
-    \item{coverage_threshold}{cutoff coverage threshold for fist 100 
-        nucleotides}
-    \item{long_coverage_threshold}{cutoff threshold for coverage in thre region
-        of long form}
+    \item{coverage_threshold}{cutoff coverage threshold for first 100 
+        nucleotides. If the coverage of first 100 nucleotides is lower than 
+        coverage_threshold, that transcript will be dropped.}
+    \item{long_coverage_threshold}{cutoff threshold for coverage in the region
+        of long form. If the coverage in the region of long form is less than 
+        long_coverage_threshold, that transcript will be dropped.}
     \item{gcCompensation}{GC content compensation vector}
     \item{mappabilityCompensation}{mappability compensation vector}
     \item{FFT}{use Fast Fourier Transform Algorithm to smooth the data or not. 

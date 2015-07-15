@@ -23,4 +23,7 @@
 
     Maintainer: Jianhong Ou <jianhong.ou@umassmed.edu>
 }
+\references{
+    Sheppard S, Lawson N and Zhu L (2013). Accurate identification of polyadenylation sites from 3' end deep sequencing using a naive Bayes classifier. Bioinformatics, 29(20), pp. 2564. ISSN 1460-2059
+}
 \keyword{ package }
