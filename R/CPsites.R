@@ -40,8 +40,15 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
     utr3 <- utr3[utr3$id!="CDS"]
     MINSIZE <- 10
     hugeData <- class(coverage[[1]])=="character"
-    depth.weight <- depthWeight(coverage, hugeData, groupList)
-    totalCov <- totalCoverage(coverage, genome, hugeData, groupList)
+    if(hugeData && !is.null(names(groupList))[1]){
+        coverage <- mergeCoverage(coverage, groupList, genome, BPPARAM=BPPARAM)
+        hugeData <- FALSE
+        depth.weight <- depthWeight(coverage, hugeData)
+        totalCov <- totalCoverage(coverage, genome, hugeData)
+    }else{
+        depth.weight <- depthWeight(coverage, hugeData, groupList)
+        totalCov <- totalCoverage(coverage, genome, hugeData, groupList)
+    }
     utr3TotalCov <- UTR3TotalCoverage(utr3, totalCov, 
                                       gcCompensation, mappabilityCompensation, 
                                       FFT=FFT, fft.sm.power=fft.sm.power)

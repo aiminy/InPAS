@@ -5,7 +5,7 @@ testUsage <- function(CPsites, coverage, genome, utr3, BPPARAM=NULL,
                                 "singleGroup"),
                       normalize=c("none", "quantiles", "quantiles.robust",
                                "mean", "median"),
-                      design, contrast.matrix, coef=1,
+                      design, contrast.matrix, coef=1, robust=FALSE, ..., 
                       gp1, gp2){
     method <- match.arg(method)
     normalize <- match.arg(normalize)
@@ -17,8 +17,7 @@ testUsage <- function(CPsites, coverage, genome, utr3, BPPARAM=NULL,
             if(missing(design)||missing(contrast.matrix)){
                 stop("desing and contrast.matrix is required.")
             }
-            fit <- limmaAnalyze(eset, design, contrast.matrix)
-            res <- as.matrix(limmaTable(fit, eset, coef))
+            res <- limmaAnalyze(eset, design, contrast.matrix, coef=coef, robust=FALSE, ...)
         }
         if(method=="fisher.exact"){
             if(missing(gp1)||missing(gp2)){

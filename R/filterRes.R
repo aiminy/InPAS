@@ -60,6 +60,7 @@ filterRes <- function(res,
     PDUI.gp1 <- rowMeans(PDUI.gp1)
     PDUI.gp2 <- rowMeans(PDUI.gp2)
     if(!"dPDUI" %in% colnames(res$testRes)){
+        message("dPDUI is calculated by gp2 - gp1.")
         dPDUI <- PDUI.gp2 - PDUI.gp1
     }else{
         dPDUI <- res$testRes[, "dPDUI"]

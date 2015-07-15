@@ -53,7 +53,7 @@ UTR3TotalCoverage <- function(utr3, totalCov,
             view <- list(view)
             names(view) <- names(.utr)
         }
-        if(length(view)>0) view <- view[sapply(view, sum)>0]
+        if(length(view)>0) view <- view[sapply(view, mean)>0]
         if(!is.na(gcComp[1]) && length(gcComp)==length(.cvg[[1]])){
             view <- compensation(view, gcComp, start, end)
         }

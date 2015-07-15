@@ -13,10 +13,15 @@ depthWeight <- function(coverage, hugeData, groupList=NULL){
         }
         if(!is.null(names(groupList))[1]){
             names(depth) <- names(coverage)
-            groups <- do.call(rbind, groupList)
-            depth <- split(depth[groups[,1]], rownames(groups))
-            depth <- lapply(depth, sum)
-            n <- rownames(groups)
+            groups <- rep(names(groupList), sapply(groupList, length))
+            names(groups) <- unlist(groupList)
+            groups <- groups[match(names(depth), names(groups))]
+            if(any(is.na(groups))){
+                stop("all the tags in groupList must has correct names as it in coverage")
+            }
+            depth <- split(depth, groups)
+            depth <- sapply(depth, mean)
+            n <- names(depth)
         }
         
     }else{

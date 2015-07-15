@@ -8,6 +8,7 @@ totalCoverage <- function(coverage, genome, hugeData, groupList=NULL){
         cov <- vector("list", length=length(groupList))
         names(cov) <- names(groupList)
         for(i in 1:length(cov)){
+            cov[[i]] <- list()
             for(s in seqnames){
                 cov[[i]][[s]] <- Rle(0, seqLen[s])
             }

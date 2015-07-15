@@ -1,5 +1,6 @@
 coverageFromBedGraph <- function(bedgraphs, tags, 
-                                 genome, hugeData=FALSE, ...){
+                                 genome, hugeData=FALSE, 
+                                 BPPARAM=NULL, ...){
     if(missing(genome))
         stop("genome is required.")
     if(class(genome)!="BSgenome")
@@ -17,17 +18,39 @@ coverageFromBedGraph <- function(bedgraphs, tags,
         stop("Not all bedgraphs exist")
     seqLen <- seqLen(genome)
     ## get coverage for all inputs
+    names(bedgraphs) <- tags
     if(hugeData){
-        coverage <- list()
-        for(i in 1:length(bedgraphs)){
-            cvg <- getCov(bedgraphs[i], genome, seqLen)
-            filename <- tempfile(...)
-            save(list="cvg", file=filename)
-            coverage[[tags[i]]] <- filename
+        x <- 1:length(bedgraphs)
+        y <- split(x, ceiling(x/10))
+        coverage <- bedgraphs
+        for(i in 1:length(y)){
+            if(!is.null(BPPARAM)){
+                cv <- bplapply(bedgraphs[y[[i]]], function(.ele){
+                    cvg <- getCov(.ele, genome, seqLen)
+                    filename <- tempfile(...)
+                    save(list="cvg", file=filename)
+                    filename
+                }, BPPARAM=BPPARAM)
+            }else{
+                cv <- lapply(bedgraphs[y[[i]]], function(.ele){
+                    cvg <- getCov(.ele, genome, seqLen)
+                    filename <- tempfile(...)
+                    save(list="cvg", file=filename)
+                    filename
+                })
+            }
+            coverage[names(cv)] <- unlist(cv)
         }
+        coverage <- as.list(coverage[tags])
     }else{
-        coverage <- lapply(bedgraphs, getCov, genome=genome, seqLen=seqLen)
-        names(coverage) <- tags
+        if(!is.null(BPPARAM)){
+            coverage <- bplapply(bedgraphs, getCov, 
+                                 genome=genome, seqLen=seqLen,
+                                 BPPARAM=BPPARAM)
+        }else{
+            coverage <- lapply(bedgraphs, getCov, genome=genome, seqLen=seqLen)
+        }
+        coverage <- coverage[tags]
     }
     coverage
 }

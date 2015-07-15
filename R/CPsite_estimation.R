@@ -5,7 +5,7 @@ CPsite_estimation <- function(chr.cov, utr3, MINSIZE, window_size,
                               coverage_threshold, long_coverage_threshold, 
                               PolyA_PWM, classifier, classifier_cutoff, 
                               shift_range, depth.weight, genome){
-    chr.cov <- chr.cov[sapply(chr.cov, sum)>0]
+    chr.cov <- chr.cov[sapply(chr.cov, mean)>0]
     if(length(chr.cov)==0){
         return(NULL)
     }

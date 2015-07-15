@@ -22,26 +22,40 @@ BiocStyle::latex()
 \tableofcontents
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-    Alternative polyadenylation (APA) is one of the important 
-    post-transcriptional regulation mechanism which occurs in most human 
-    genes. APA in a gene can result in altered expression of the gene, 
-    which can lead pathological effect to cells, such as uncontrolled cell 
-    cycle, cell death. However, there are only limited ways to identify 
-    and quantify APA in genes. PAS-seq is the most widely used method for 
-    this purpose, but it suffers from complicated process for library 
-    construction and biased results. Moreover, as PAS-seq needs relatively 
-    high amount of RNA to construct library and the use of PAS-seq data is 
-    restricted to find APA in genes, it is hardly to be standard method for 
-    data mining. 
 
-    Nowadays, RNA-seq analysis is one of the important way to quantify 
-    overall gene expression from any given samples as RNA-seq data contain 
-    all the information of transcript. So it is possible to collect lots of 
-    information of transcript form RNA-seq data such as different isoforms 
-    and alternative splicing events. This method is relatively easy and 
-    useful for data mining, there are lots of massive database of RNA-seq 
-    such as TCGA. For this reason, the need to develop the algorithm which 
-    can identify APA from conventional RNA-seq data has been emerged. 
+    Alternative polyadenylation (APA) is one of the most important 
+    post-transcriptional regulation mechanisms which occurs in most human 
+    genes. APA in a gene can result in altered expression of the gene, 
+    which can lead pathological effect to the cells, such as uncontrolled cell 
+    cycle and growth. However, there are only limited ways to identify 
+    and quantify APA in genes, and most of them suffers from complicated 
+    process for library construction and requires large amount of RNAs. 
+
+    RNA-seq has become one of the most commonly used methods for quantifying 
+    genome-wide gene expression. There are massive RNA-seq datasets available 
+    publicly such as GEO and TCGA. For this reason, we develop the InPAS 
+    algorithm for identifying APA from conventional RNA-seq data.
+    
+%     Alternative polyadenylation (APA) is one of the important 
+%     post-transcriptional regulation mechanism which occurs in most human 
+%     genes. APA in a gene can result in altered expression of the gene, 
+%     which can lead pathological effect to cells, such as uncontrolled cell 
+%     cycle, cell death. However, there are only limited ways to identify 
+%     and quantify APA in genes. PAS-seq is the most widely used method for 
+%     this purpose, but it suffers from complicated process for library 
+%     construction and biased results. Moreover, as PAS-seq needs relatively 
+%     high amount of RNA to construct library and the use of PAS-seq data is 
+%     restricted to find APA in genes, it is hardly to be standard method for 
+%     data mining. 
+% 
+%     Nowadays, RNA-seq analysis is one of the important way to quantify 
+%     overall gene expression from any given samples as RNA-seq data contain 
+%     all the information of transcript. So it is possible to collect lots of 
+%     information of transcript form RNA-seq data such as different isoforms 
+%     and alternative splicing events. This method is relatively easy and 
+%     useful for data mining, there are lots of massive database of RNA-seq 
+%     such as TCGA. For this reason, the need to develop the algorithm which 
+%     can identify APA from conventional RNA-seq data has been emerged. 
 
 %     Recently, two groups reported the methods how to mine APA usage from 
 %     RNA-seq.

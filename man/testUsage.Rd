@@ -12,7 +12,7 @@ testUsage(CPsites, coverage, genome, utr3, BPPARAM=NULL,
                     "singleSample", "singleGroup"),
           normalize=c("none", "quantiles", "quantiles.robust",
                         "mean", "median"),
-          design, contrast.matrix, coef=1,
+          design, contrast.matrix, coef=1, robust=FALSE, ..., 
           gp1, gp2)
 }
 \arguments{
@@ -41,6 +41,8 @@ testUsage(CPsites, coverage, genome, utr3, BPPARAM=NULL,
     numeric matrix with rows corresponding to coefficients in fit and columns containing contrasts. May be a vector if there is only one contrast. see \link[limma]{makeContrasts}
 }
   \item{coef}{column number or column name specifying which coefficient or contrast of the linear model is of interest. see more \link[limma]{topTable}. default value: 1}
+  \item{robust}{logical, should the estimation of the empirical Bayes prior parameters be robustified against outlier sample variances?}
+  \item{...}{other arguments are passed to lmFit.}
   \item{gp1}{
     tag names involved in group 1
 }
