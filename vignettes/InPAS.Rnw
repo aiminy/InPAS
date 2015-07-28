@@ -135,7 +135,7 @@ CPsites <- CPsites(coverage=coverage,
                    long_coverage_threshold=3,
                    PolyA_PWM=pwm, 
                    classifier=classifier,
-                   shift_range=50)
+                   shift_range=100)
 
 ##step3 Estimate 3UTR usage
 res <- utr3UsageEstimation(CPsites=CPsites, 
@@ -148,7 +148,7 @@ res <- utr3UsageEstimation(CPsites=CPsites,
                            adjusted.P_val.cutoff=0.05, 
                            dPDUI_cutoff=0.3, 
                            PDUI_logFC_cutoff=0.59)
-res
+res[1]
 @
 
     The process described above can be done in one step.
@@ -170,7 +170,7 @@ if(interactive()){
 
     InPAS can handle single group data.
 <<SingleGroupData>>=
-inPAS(bedgraphs=bedgraphs[1], tags=c("Baf3"), 
+res <- inPAS(bedgraphs=bedgraphs[1], tags=c("Baf3"), 
               genome=BSgenome.Mmusculus.UCSC.mm10, 
               utr3=utr3.mm10, gp1="Baf3", gp2=NULL,
               txdb=TxDb.Mmusculus.UCSC.mm10.knownGene,
@@ -180,6 +180,7 @@ inPAS(bedgraphs=bedgraphs[1], tags=c("Baf3"),
               cutStart=0, cutEnd=.2, 
               hugeData=FALSE, 
               PolyA_PWM=pwm, classifier=classifier)
+res[1]
 @
 
 % \section{References}
