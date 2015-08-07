@@ -1,8 +1,27 @@
 getCov <- function(bedgraph, genome, seqLen){
     seqnames.bedfile <- 
         read.delim(bedgraph, header=FALSE, comment.char="#", 
-                   colClasses=c(NA, "NULL", "NULL", "NULL"))[,1]
-    seqnames <- sort(intersect(levels(seqnames.bedfile), trimSeqnames(genome)))
+                   colClasses=c("factor", "NULL", "NULL", "NULL"))[,1]
+    seqnames <- trimSeqnames(genome)
+    seqStyle <- seqlevelsStyle(genome) ## should be UCSC
+    seqStyle.bed <- seqlevelsStyle(levels(seqnames.bedfile))
+    if(!any(seqStyle.bed==seqStyle)){
+        message("seqlevelsStyle of genome is different from bedgraph file.")
+        ## convert to seqStyle
+        levels <- 
+            mapSeqlevels(levels(seqnames.bedfile), seqStyle)
+        if(class(levels)!="character"){
+            id <- apply(levels, 1, function(.ele) 
+                sum(seqnames %in% .ele))
+            levels <- levels[id==max(id),][1, ]
+        }
+        levels[is.na(levels)] <- names(levels)[is.na(levels)]
+        levels(seqnames.bedfile) <- levels
+    }
+    seqnames <- sort(intersect(levels(seqnames.bedfile), seqnames))
+    if(length(seqnames)<1){
+        stop(paste("there is no intersect seqname in", bedgraph, "and genome"))
+    }
     summaryFunction <- function(seqname){
         seqL <- seqLen[seqname]
         lines2read <- Rle(c(FALSE, seqnames.bedfile==seqname))

@@ -125,3 +125,17 @@ test_CPsites_utr3Usage<-function(){
     checkEqualsNumeric(res$PDUI.gp2, 1, tolerance=1.0e-2)
     checkEquals(as.logical(res$filterPass), TRUE)
 }
+
+test_getCov_seqlevelsStyle <- function(){
+    utr3 <- generateUTR3()
+    testGR <- generateGRs(c(5, 400, 1001), c(399, 1000, 1500), c(40, 10, 1))
+    seqlevelsStyle(testGR) <- "NCBI"
+    
+    filename <- tempfile()
+    export(testGR, filename, format="BEDGraph")
+    genome <- BSgenome.Mmusculus.UCSC.mm10
+    
+    coverage <- coverageFromBedGraph(filename, tags="test", 
+                                     genome=genome, 
+                                     hugeData=FALSE)
+}

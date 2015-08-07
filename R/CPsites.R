@@ -22,6 +22,9 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
            !all(utr3$id %in% c("utr3", "next.exon.gap", "CDS"))){
         stop("utr3 must be output of function of utr3Annotation")
     }
+    if(seqlevelsStyle(utr3)!=seqlevelsStyle(genome)){
+        stop("the seqlevelsStyle of utr3 must be same as genome")
+    }
     background <- match.arg(background)
     introns <- GRanges()
     if(background!="same_as_long_coverage_threshold"){

@@ -1,3 +1,8 @@
+CHANGES IN VERSION 1.1.6
+------------------------
+BUG FIXES
+    o fix the seqlevels style issue.
+
 CHANGES IN VERSION 1.1.5
 ------------------------
 BUG FIXES
