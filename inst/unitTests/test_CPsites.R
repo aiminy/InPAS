@@ -73,7 +73,7 @@ NOtest_searchDistalCPs <- function(){
     CP <- CPsites(coverage=coverage, genome=genome, txdb=txdb,
                   utr3=utr3, coverage_threshold=5, long_coverage_threshold=5,
                   background="10K")
-    checkCPs(CP, proximal=4909476, type="novalDistal")
+    checkCPs(CP, proximal=4909476, type="novel distal")
     
     ## distal adjust
 #     data(classifier) ## could not load cleanUpdTSeq from the test file. need to figure out the reason.
@@ -114,7 +114,7 @@ test_CPsites_utr3Usage<-function(){
                                      hugeData=FALSE)
     CP <- CPsites(coverage=coverage, genome=genome, 
                   utr3=utr3, coverage_threshold=5, long_coverage_threshold=5)
-    checkCPs(CP, 399, 1000, "novalDistal")
+    checkCPs(CP, 399, 1000, "novel distal")
     
     res <- utr3UsageEstimation(CP, coverage, genome=genome, 
                                utr3=utr3, gp1="test1", gp2="test2", 
