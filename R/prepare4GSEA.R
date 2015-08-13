@@ -17,7 +17,7 @@ prepare4GSEA <- function(eset, groupList, Preranked=TRUE,
             stop("The rownames of eset slots are not identical")
         }
         rank <- data.frame(symbol=usage$symbol, p.value=1-testRes[, "P.Value"])
-        write.table(rank, file.path(foler, rnkFilename),
+        write.table(rank, file.path(folder, rnkFilename),
                     sep="\t", quote=FALSE, row.names=F, col.names=F)
     }else{
         eset <- as(eset, "ExpressionSet")

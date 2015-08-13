@@ -42,7 +42,7 @@ NOtest_searchDistalCPs <- function(){
                                      hugeData=FALSE)
     CP <- CPsites(coverage=coverage, genome=genome, 
                   utr3=utr3, coverage_threshold=5, long_coverage_threshold=5)
-    checkCPs(CP, 399, 1000, "novalDistal")
+    checkCPs(CP, 399, 1000, "novel distal")
     
     # local background
     utr3 <- generateUTR3(FALSE)
@@ -98,7 +98,7 @@ test_CPsites_utr3Usage<-function(){
                                      hugeData=FALSE)
     CP <- CPsites(coverage=coverage, genome=genome, 
                   utr3=utr3, coverage_threshold=5, long_coverage_threshold=5)
-    checkCPs(CP, 399, 1000, "novalDistal")
+    checkCPs(CP, 399, 1000, "novel distal")
     
     res <- utr3UsageEstimation(CP, coverage, genome=genome, 
                                utr3=utr3, gp1="test", gp2=NULL, 
