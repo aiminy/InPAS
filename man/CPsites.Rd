@@ -17,7 +17,7 @@
         gcCompensation=NA, mappabilityCompensation=NA, 
         FFT=FALSE, fft.sm.power=20, 
         PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, shift_range=window_size,
-        BPPARAM=NULL)
+        BPPARAM=NULL, tmpfolder=NULL, silence=TRUE)
 }
 \arguments{
     \item{coverage}{coverage for each sample, 
@@ -62,6 +62,9 @@
         instance determining the parallel back-end to be used during 
         evaluation, or a list of BiocParallelParam instances, to be applied 
         in sequence for nested calls to bplapply.}
+    \item{tmpfolder}{temp folder could save and reload the analysis data for 
+    resume analysis.}
+    \item{silence}{report progress or not. default not report.}
 }
 \value{
     return an object of GRanges contain the estimated CP sites.

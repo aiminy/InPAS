@@ -44,17 +44,33 @@ searchDistalCPs <- function(chr.cov.merge,
                 log2(next.exon.gap.split[-length(next.exon.gap.split)]+0.01)
             id <- which(abs(next.exon.gap.split.diff)>log2(30))
             ### drop by background by window
+            ## the gap == 2Xwindow size low coverage
+            cont.num <- function(x){
+                if(length(x)==1) return(x)
+                r <- which(diff(x)==1)
+                if(length(r)>0){
+                    return(x[r[1]+1])
+                }else{
+                    return(x[length(x)])
+                }
+            }
             if(background!="same_as_long_coverage_threshold"){
                 z2_threshold <- z2s[names(curr_UTR.ele[curr_UTR.ele$id=="utr3"])]
                 if(!is.na(z2_threshold)){
-                    z2 <- which(next.exon.gap.split >= z2_threshold)
+                    z2 <- which(next.exon.gap.split < z2_threshold)
                     if(length(z2)>0){
-                        id <- min(c(z2[length(z2)], id))
-                    }else{
-                        id <- 0
+                        z2 <- cont.num(z2)
+                        id <- min(c(z2, id))
                     }
                 }
-            } 
+            }else{
+                ##background == long_coverage_threshold
+                z2 <- which(next.exon.gap.split < long_coverage_threshold)
+                if(length(z2)>0){
+                    z2 <- cont.num(z2)
+                    id <- min(c(z2, id))
+                }
+            }
             if(length(id)>0){
                 conn_next_utr <- FALSE
                 id <- id[1] - 1

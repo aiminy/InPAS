@@ -1,6 +1,7 @@
 CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100, 
                     search_point_START=50, search_point_END=NA, 
-                    cutStart=window_size, cutEnd=0, adjust_distal_polyA_end=TRUE, 
+                    cutStart=window_size, cutEnd=0, 
+                    adjust_distal_polyA_end=TRUE, 
                     coverage_threshold=5, long_coverage_threshold=2, 
                     background=c("same_as_long_coverage_threshold", 
                                  "1K", "5K", "10K", "50K"),
@@ -8,7 +9,8 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
                     gcCompensation=NA, mappabilityCompensation=NA, 
                     FFT=FALSE, fft.sm.power=20, 
                     PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, 
-                    shift_range=window_size, BPPARAM=NULL){
+                    shift_range=window_size, BPPARAM=NULL, tmpfolder=NULL,
+                    silence=TRUE){
     if(!is.na(PolyA_PWM)[1]){
         if(class(PolyA_PWM)!="matrix") stop("PolyA_PWM must be matrix")
         if(any(rownames(PolyA_PWM)!=c("A", "C", "G", "T"))) 
@@ -25,10 +27,12 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
     if(seqlevelsStyle(utr3)!=seqlevelsStyle(genome)){
         stop("the seqlevelsStyle of utr3 must be same as genome")
     }
+    if(!is.null(tmpfolder)) dir.create(tmpfolder, showWarnings = FALSE)
     background <- match.arg(background)
     introns <- GRanges()
     if(background!="same_as_long_coverage_threshold"){
-        if(class(txdb)!="TxDb") stop("txdb is missing when you want local background")
+        if(class(txdb)!="TxDb") 
+            stop("txdb is missing when you want local background")
         if(!identical(unname(genome(txdb))[1], unname(genome(utr3))[1])) 
             stop("genome of txdb should be same as genome of utr3")
         introns <- intronsByTranscript(txdb, use.names=TRUE)
@@ -40,11 +44,23 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
         ol.exons <- findOverlaps(exons, intron_exons)
         introns <- intron_exons[-unique(subjectHits(ol.exons))]
     }
+    if(!silence) message("total backgroud ... done.")
     utr3 <- utr3[utr3$id!="CDS"]
     MINSIZE <- 10
     hugeData <- class(coverage[[1]])=="character"
     if(hugeData && !is.null(names(groupList))[1]){
-        coverage <- mergeCoverage(coverage, groupList, genome, BPPARAM=BPPARAM)
+        cov.load <- FALSE
+        if(!is.null(tmpfolder)){
+            if(file.exists(file.path(tmpfolder, "cov.rds"))){
+                load(file.path(tmpfolder, "cov.rds"))
+                cov.load <- TRUE
+            }
+        }
+        if(!cov.load)
+            coverage <- 
+                mergeCoverage(coverage, groupList, genome, BPPARAM=BPPARAM)
+        if(!is.null(tmpfolder) && !cov.load) 
+            save(list="coverage", file=file.path(tmpfolder, "cov.rds"))
         hugeData <- FALSE
         depth.weight <- depthWeight(coverage, hugeData)
         totalCov <- totalCoverage(coverage, genome, hugeData)
@@ -52,10 +68,15 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
         depth.weight <- depthWeight(coverage, hugeData, groupList)
         totalCov <- totalCoverage(coverage, genome, hugeData, groupList)
     }
-    utr3TotalCov <- UTR3TotalCoverage(utr3, totalCov, 
-                                      gcCompensation, mappabilityCompensation, 
-                                      FFT=FFT, fft.sm.power=fft.sm.power)
-    z2s <- zScoreThrethold(background, introns, totalCov, utr3)
+    if(!silence) message("total coverage ... done.")
+    utr3TotalCov <- 
+        UTR3TotalCoverage(utr3, totalCov, 
+                          gcCompensation, mappabilityCompensation, 
+                          FFT=FFT, fft.sm.power=fft.sm.power)
+    if(!silence) message("coverage in 3utr ... done.")
+    z2s <- zScoreThrethold(background, introns, totalCov, utr3)   
+    if(!silence) message("backgroud around 3utr ... done.")
+    
     if(!is.null(BPPARAM)){
         shorten_UTR_estimation <- 
             bplapply(utr3TotalCov, CPsite_estimation,
@@ -75,7 +96,9 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
                      classifier_cutoff=classifier_cutoff, 
                      shift_range=shift_range, 
                      depth.weight=depth.weight, 
-                     genome=genome)
+                     genome=genome,
+                     tmpfolder=tmpfolder,
+                     silence=silence)
     }else{
         shorten_UTR_estimation <- 
             lapply(utr3TotalCov, CPsite_estimation, 
@@ -93,7 +116,9 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
                    classifier=classifier, classifier_cutoff=classifier_cutoff, 
                    shift_range=shift_range, 
                    depth.weight=depth.weight, 
-                   genome=genome)
+                   genome=genome,
+                   tmpfolder=tmpfolder,
+                   silence=silence)
     }
     shorten_UTR_estimation <- 
         do.call(rbind, 

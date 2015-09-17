@@ -13,6 +13,8 @@ searchProximalCPs <- function(CPs, curr_UTR,
     flag <- dCPs$distalCP > window_size
     dCPs$length[flag] <- dCPs$length[flag] + dCPs$distalCP[flag]
     dCPs$type <- ifelse(flag, "novel distal", "novel proximal")
+    dCPs$type[grepl("proximalCP", dCPs$feature) & !flag] <- 
+        "annotated proximal"
     dist_apa <- function(d, id){
         ifelse(id>0, 
                as.numeric(rownames(d)[id]), 
