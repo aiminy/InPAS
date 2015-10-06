@@ -1,7 +1,7 @@
 Package: InPAS
 Type: Package
 Title: Identification of Novel alternative PolyAdenylation Sites (PAS)
-Version: 1.1.8
+Version: 1.1.9
 Date: 2015-08-19
 Authors@R: c(person("Jianhong Ou", "Developer", role = c("aut", "cre"),
         email = "jianhong.ou@umassmed.edu"), person("Lihua Julie Zhu",
@@ -24,4 +24,5 @@ Depends: R (>= 3.1), methods, Biobase, GenomicRanges, GenomicFeatures,
 Suggests: RUnit, BiocGenerics, BiocStyle, BSgenome.Hsapiens.UCSC.hg19,
         BSgenome.Mmusculus.UCSC.mm10, org.Hs.eg.db, org.Mm.eg.db,
         TxDb.Hsapiens.UCSC.hg19.knownGene,
-        TxDb.Mmusculus.UCSC.mm10.knownGene, rtracklayer
+        TxDb.Mmusculus.UCSC.mm10.knownGene, rtracklayer, knitr
+VignetteBuilder: knitr

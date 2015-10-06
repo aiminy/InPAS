@@ -27,6 +27,10 @@ inPAS <- function(bedgraphs, genome, utr3, txdb=NA,
                   PDUI_logFC_cutoff=0.59,
                   
                   BPPARAM=NULL){
+    background <- match.arg(background)
+    method <- match.arg(method)
+    normalize <- match.arg(normalize)
+    
     if(!missing(gp1) | !missing(gp2)){
         if(!all(c(gp1,gp2) %in% tags)) stop("gp1 and gp2 must be in tags")
         if(missing(gp2)) gp2 <- NULL
@@ -38,8 +42,8 @@ inPAS <- function(bedgraphs, genome, utr3, txdb=NA,
     
     if(missing(gp2)) gp2 <- NULL
     if(missing(gp1)) gp1 <- NULL
-    gp2 <- gp2[!is.na(gp2)]
-    gp1 <- gp1[!is.na(gp1)]
+    if(length(gp2)>0) gp2 <- gp2[!is.na(gp2)]
+    if(length(gp1)>0) gp1 <- gp1[!is.na(gp1)]
     if(missing(design)) design <- NULL
     if(missing(contrast.matrix)) contrast.matrix <- NULL
     
@@ -61,9 +65,6 @@ inPAS <- function(bedgraphs, genome, utr3, txdb=NA,
         stop("utr3 must be output of function of utr3Annotation")
     }
     
-    background <- match.arg(background)
-    method <- match.arg(method)
-    normalize <- match.arg(normalize)
     if(length(gp2)<1 | length(gp1)<1){
         samples <- unlist(groupList)
         samples <- samples[!is.na(samples)]
