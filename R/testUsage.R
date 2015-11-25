@@ -7,6 +7,8 @@ testUsage <- function(CPsites, coverage, genome, utr3, BPPARAM=NULL,
                                "mean", "median"),
                       design, contrast.matrix, coef=1, robust=FALSE, ..., 
                       gp1, gp2){
+    stopifnot(length(CPsites)>0 && class(CPsites)=="GRanges")
+    stopifnot(length(coverage)>0)
     method <- match.arg(method)
     normalize <- match.arg(normalize)
     res <- NULL
