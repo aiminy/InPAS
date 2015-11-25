@@ -10,11 +10,11 @@ singleSampleAnalyze <- function(UTR3eset){
                      family=poisson(), respstart=log(mean(counts)))
         m2 <- depmix(response=counts~1, nstates=2, data=as.data.frame(counts),
                      family=poisson(), respstart=c(log(mu.1), log(mu.2)))
-        fm1 <- try(fit(m1, verbose=FALSE))
+        fm1 <- try(fit(m1, verbose=FALSE), silent=TRUE)
         if(inherits(fm1, "try-error")){
             return(1)
         }
-        fm2 <- try(fit(m2, verbose=FALSE))
+        fm2 <- try(fit(m2, verbose=FALSE), silent=TRUE)
         if(inherits(fm2, "try-error")){
             return(1)
         }
