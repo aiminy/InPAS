@@ -25,12 +25,20 @@ coverageFromBedGraph <- function(bedgraphs, tags,
         coverage <- bedgraphs
         for(i in 1:length(y)){
             if(!is.null(BPPARAM)){
-                cv <- bplapply(bedgraphs[y[[i]]], function(.ele){
+                cv <- bptry(bplapply(bedgraphs[y[[i]]], function(.ele){
                     cvg <- getCov(.ele, genome, seqLen)
                     filename <- tempfile(...)
                     save(list="cvg", file=filename)
                     filename
-                }, BPPARAM=BPPARAM)
+                }, BPPARAM=BPPARAM))
+                while(!all(bpok(cv))){
+                    cv <- bptry(bplapply(bedgraphs[y[[i]]], function(.ele){
+                        cvg <- getCov(.ele, genome, seqLen)
+                        filename <- tempfile(...)
+                        save(list="cvg", file=filename)
+                        filename
+                    }, BPREDO=cv, BPPARAM=BPPARAM))
+                }
             }else{
                 cv <- lapply(bedgraphs[y[[i]]], function(.ele){
                     cvg <- getCov(.ele, genome, seqLen)
