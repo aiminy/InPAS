@@ -89,6 +89,13 @@ coverage <- coverageFromBedGraph(bedgraphs,
                                  genome=BSgenome.Mmusculus.UCSC.mm10,
                                  hugeData=hugeData)
 
+## we hope the coverage rate of should be greater than 0.6 in the expressed gene.
+## which is used because the demo data is a subset of genome.
+coverageRate(coverage=coverage,
+             txdb=TxDb.Mmusculus.UCSC.mm10.knownGene,
+             genome=BSgenome.Mmusculus.UCSC.mm10,
+             which = GRanges("chr6", ranges=IRanges(98013000, 140678000)))
+
 ##step2 Predict cleavage sites
 CPs <- CPsites(coverage=coverage, 
                genome=BSgenome.Mmusculus.UCSC.mm10,

@@ -18,6 +18,7 @@ importFrom(preprocessCore, colSummarizeAvg, colSummarizeMedian,
 exportClass("UTR3eSet")
 exportMethods("$", "$<-")
 export(coverageFromBedGraph,
+       coverageRate,
        CPsites,
        filterRes,
        fisher.exact.test,
