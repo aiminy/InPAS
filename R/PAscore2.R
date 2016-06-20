@@ -10,7 +10,7 @@ PAscore2 <- function(seqname, pos, str, idx, idx.gp,
                 strand=str)
     gr$id <- 1:length(gr)
     coor.id <- !duplicated(coor)
-    gr$duplicated <- gr$id[match(coor, coor[coor.id])]
+    gr$duplicated <- gr$id[coor.id][match(coor, coor[coor.id])]
     gr.s <- gr[coor.id]
     testSet.NaiveBayes <- 
         buildFeatureVector(gr.s, BSgenomeName = genome, 
@@ -26,12 +26,17 @@ PAscore2 <- function(seqname, pos, str, idx, idx.gp,
                                         classifier=classifier, 
                                         outputFile=NULL, 
                                         assignmentCutoff=classifier_cutoff))
+    pred.prob.test <- pred.prob.test[match(names(gr.s), 
+                                           pred.prob.test$PeakName), , 
+                                     drop=FALSE]
     if(any(duplicated(coor))){
         ## need to recover the order of inputs
-        pred.prob.test <- pred.prob.test[gr$duplicated, , drop=FALSE]
+        pred.prob.test <- pred.prob.test[match(gr$duplicated, gr.s$id), , 
+                                         drop=FALSE]
         pred.prob.test[, "PeakName"] <- names(gr)
     }
     pred.prob.test <- cbind(pred.prob.test[,1:4], idx, idx.gp)
+    pred.prob.test <- pred.prob.test[!is.na(pred.prob.test[, "pred.class"]), ]
     pred.prob.test <- pred.prob.test[pred.prob.test[, "pred.class"]==1, ]
     pred.prob.test <- pred.prob.test[order(pred.prob.test[, "idx.gp"],
                                            -pred.prob.test[, "prob True"]), ]
