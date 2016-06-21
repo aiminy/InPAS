@@ -9,7 +9,7 @@
 \usage{
 proximalAdjByCleanUpdTSeq(idx.list, cov_diff.list, seqnames, starts, strands, 
                         genome, classifier, classifier_cutoff, 
-                        shift_range, search_point_START)
+                        shift_range, search_point_START, step=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -42,6 +42,9 @@ proximalAdjByCleanUpdTSeq(idx.list, cov_diff.list, seqnames, starts, strands,
 }
   \item{search_point_START}{
     just in case there is no better CP sites
+}
+  \item{step}{
+    adjust step, default 1, means adjust by each base by cleanUpdTSeq.
 }
 }
 \details{

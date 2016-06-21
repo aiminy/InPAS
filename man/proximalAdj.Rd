@@ -8,7 +8,7 @@
 }
 \usage{
 proximalAdj(CPs, MINSIZE, PolyA_PWM, genome, classifier, classifier_cutoff, 
-            shift_range, search_point_START)
+            shift_range, search_point_START, step=1)
 }
 
 \arguments{
@@ -35,6 +35,9 @@ proximalAdj(CPs, MINSIZE, PolyA_PWM, genome, classifier, classifier_cutoff,
 }
   \item{search_point_START}{
     just in case there is no better CP sites
+}
+  \item{step}{
+    adjust step, default 1, means adjust by each base by cleanUpdTSeq.
 }
 }
 \value{

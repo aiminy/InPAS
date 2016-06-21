@@ -18,8 +18,9 @@ generateUTR3 <- function(normal=TRUE){
                 IRanges(c(100, 600), c(599, 2000),
                         names=c("transcript1|gene1|utr3", 
                                 "transcript1|gene1|next.exon.gap")), 
-                strand="+", feature="unknown", 
-                id=c("utr3", "next.exon.gap"),
+                strand="+", 
+                feature=c("utr3", "next.exon.gap"),
+                annotatedProximalCP="unknown", 
                 exon="transcript1", transcript="transcript1|",
                 gene="1", symbol="gene1")
     }else{

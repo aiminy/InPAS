@@ -16,7 +16,15 @@ vignette: >
 output:
   BiocStyle::html_document
 ---
-
+```{r preloadLibrary, echo=FALSE, results="hide", warning=FALSE}
+suppressPackageStartupMessages({
+    library(InPAS)
+    library(BSgenome.Mmusculus.UCSC.mm10)
+    library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+    library(org.Hs.eg.db)
+    library(cleanUpdTSeq)
+})
+```
 # Introduction
 
 Alternative polyadenylation (APA) is one of the most important 
@@ -43,8 +51,8 @@ The workflow for InPAS is:
 To use InPAS, BSgenome and TxDb object have to be loaded before run.
 
 ```{r loadLibrary}
-suppressPackageStartupMessages(library(InPAS))
-suppressPackageStartupMessages(library(BSgenome.Mmusculus.UCSC.mm10))
+library(InPAS)
+library(BSgenome.Mmusculus.UCSC.mm10)
 library(TxDb.Mmusculus.UCSC.mm10.knownGene)
 path <- file.path(find.package("InPAS"), "extdata")
 ```
@@ -53,7 +61,7 @@ org annotation. The 3UTR annotation prepared by **utr3Annotation**
 includes the gaps to next annotation region.
 
 ```{r prepareAnno}
-suppressPackageStartupMessages(library(org.Hs.eg.db))
+library(org.Hs.eg.db)
 samplefile <- system.file("extdata", "hg19_knownGene_sample.sqlite",
             package="GenomicFeatures")
 txdb <- loadDb(samplefile)
@@ -78,7 +86,7 @@ used for adjusting CP sites prediction.
 
 ```{r step2HugeDataF}
 load(file.path(path, "polyA.rds"))
-suppressPackageStartupMessages(library(cleanUpdTSeq))
+library(cleanUpdTSeq)
 data(classifier)
 bedgraphs <- c(file.path(path, "Baf3.extract.bedgraph"), 
                file.path(path, "UM15.extract.bedgraph"))
@@ -107,8 +115,9 @@ CPs <- CPsites(coverage=coverage,
                txdb=TxDb.Mmusculus.UCSC.mm10.knownGene,
                PolyA_PWM=pwm, 
                classifier=classifier,
-               shift_range=50)
-
+               shift_range=50,
+               step=10)
+head(CPs)
 ##step3 Estimate 3UTR usage
 res <- testUsage(CPsites=CPs, 
                  coverage=coverage, 
@@ -163,7 +172,8 @@ inPAS(bedgraphs=bedgraphs[1], tags=c("Baf3"),
       hugeData=FALSE, 
       PolyA_PWM=pwm, classifier=classifier,
       method="singleSample",
-      adj.P.Val_cutoff=0.05)
+      adj.P.Val_cutoff=0.05,
+      step=10)
 ```
 
 # Session Info

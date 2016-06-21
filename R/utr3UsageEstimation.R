@@ -36,7 +36,7 @@ utr3UsageEstimation <- function(CPsites, coverage, genome, utr3,
         if(class(genome)!="BSgenome")
             stop("genome must be an object of BSgenome.")
         if(class(utr3)!="GRanges" | 
-               !all(utr3$id %in% c("utr3", "next.exon.gap", "CDS"))){
+               !all(utr3$feature %in% c("utr3", "next.exon.gap", "CDS"))){
             stop("utr3 must be output of function of utr3Annotation")
         }
     }
@@ -142,7 +142,7 @@ utr3UsageEstimation <- function(CPsites, coverage, genome, utr3,
             ids <- data$short.mean.gp1<=0 & data$short.mean.gp2<=0
             if(sum(ids)>0){
                 ##get coverage of last CDS
-                CDS <- utr3[utr3$id=="CDS"]
+                CDS <- utr3[utr3$feature=="CDS"]
                 CDS <- CDS[CDS$transcript %in% unique(CPsites$transcript)]
                 cds.id <- match(data$transcript[ids], CDS$transcript)
                 cds.id.na <- is.na(cds.id)

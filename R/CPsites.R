@@ -8,7 +8,7 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
                     txdb=NA,
                     gcCompensation=NA, mappabilityCompensation=NA, 
                     FFT=FALSE, fft.sm.power=20, 
-                    PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, 
+                    PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, step=1,
                     shift_range=window_size, BPPARAM=NULL, tmpfolder=NULL,
                     silence=TRUE){
     if(!is.na(PolyA_PWM)[1]){
@@ -21,7 +21,7 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
     if(class(genome)!="BSgenome")
         stop("genome must be an object of BSgenome.")
     if(class(utr3)!="GRanges" | 
-           !all(utr3$id %in% c("utr3", "next.exon.gap", "CDS"))){
+           !all(utr3$feature %in% c("utr3", "next.exon.gap", "CDS"))){
         stop("utr3 must be output of function of utr3Annotation")
     }
     if(seqlevelsStyle(utr3)!=seqlevelsStyle(genome)){
@@ -45,7 +45,7 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
         introns <- intron_exons[-unique(subjectHits(ol.exons))]
     }
     if(!silence) message("total backgroud ... done.")
-    utr3 <- utr3[utr3$id!="CDS"]
+    utr3 <- utr3[utr3$feature!="CDS"]
     MINSIZE <- 10
     hugeData <- class(coverage[[1]])=="character"
     if(hugeData && !is.null(names(groupList))[1]){
@@ -97,6 +97,7 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
                      shift_range=shift_range, 
                      depth.weight=depth.weight, 
                      genome=genome,
+                     step=step,
                      tmpfolder=tmpfolder,
                      silence=silence)
     }else{
@@ -117,6 +118,7 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
                    shift_range=shift_range, 
                    depth.weight=depth.weight, 
                    genome=genome,
+                   step=step,
                    tmpfolder=tmpfolder,
                    silence=silence)
     }
@@ -124,8 +126,8 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
         do.call(rbind, 
                 unname(shorten_UTR_estimation[!sapply(shorten_UTR_estimation, 
                                                       is.null)]))
-    utr3.shorten.UTR <- utr3[utr3$id=="utr3"]
-    utr3.shorten.UTR$id <- NULL
+    utr3.shorten.UTR <- utr3[utr3$feature=="utr3"]
+    utr3.shorten.UTR$feature <- NULL
     utr3.shorten.UTR <- 
         utr3.shorten.UTR[utr3.shorten.UTR$transcript 
                          %in% rownames(shorten_UTR_estimation)]

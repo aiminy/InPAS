@@ -1,7 +1,7 @@
 polishCPs <- function(CPs){
     proximal.apa.len <- sapply(CPs$Predicted_Proximal_APA, length)
     CPs$Predicted_Proximal_APA[proximal.apa.len==0] <- 
-        ifelse(CPs$dCPs$type[proximal.apa.len==0]=="novel proximal",
+        ifelse(CPs$dCPs$type[proximal.apa.len==0]=="novel proximal", # else== novel distal
                CPs$idx1[proximal.apa.len==0],
                CPs$saved.id[proximal.apa.len==0])
     coors <- lapply(CPs$chr.cov.merge, function(.ele) as.numeric(rownames(.ele)))

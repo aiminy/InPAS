@@ -16,7 +16,8 @@
         txdb=NA,
         gcCompensation=NA, mappabilityCompensation=NA, 
         FFT=FALSE, fft.sm.power=20, 
-        PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, shift_range=window_size,
+        PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, step=1, 
+        shift_range=window_size,
         BPPARAM=NULL, tmpfolder=NULL, silence=TRUE)
 }
 \arguments{
@@ -57,6 +58,7 @@
         classifier_cutoff = 0.5 will assign an 
         putative pA site with prob.1 > 0.5 to the True class (1), 
         and any putative pA site with prob.1 <= 0.5 as False (0).}
+    \item{step}{adjust step, default 1, means adjust by each base by cleanUpdTSeq.}
     \item{shift_range}{the shift range for polyA site searching}
     \item{BPPARAM}{An optional \code{\link[BiocParallel]{BiocParallelParam}} 
         instance determining the parallel back-end to be used during 

@@ -55,7 +55,7 @@ searchDistalCPs <- function(chr.cov.merge,
                 }
             }
             if(background!="same_as_long_coverage_threshold"){
-                z2_threshold <- z2s[names(curr_UTR.ele[curr_UTR.ele$id=="utr3"])]
+                z2_threshold <- z2s[names(curr_UTR.ele[curr_UTR.ele$feature=="utr3"])]
                 if(!is.na(z2_threshold)){
                     z2 <- which(next.exon.gap.split < z2_threshold)
                     if(length(z2)>0){

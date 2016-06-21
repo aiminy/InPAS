@@ -11,7 +11,7 @@ getUTR3eSet <- function(CPsites, coverage, genome, utr3,
     if(class(genome)!="BSgenome")
         stop("genome must be an object of BSgenome.")
     if(class(utr3)!="GRanges" | 
-           !all(utr3$id %in% c("utr3", "next.exon.gap", "CDS"))){
+           !all(utr3$feature %in% c("utr3", "next.exon.gap", "CDS"))){
         stop("utr3 must be output of function of utr3Annotation")
     }
     normalize <- match.arg(normalize)
@@ -48,7 +48,7 @@ getUTR3eSet <- function(CPsites, coverage, genome, utr3,
     UTRusage.short.data <- UTRusage.total.data - UTRusage.long.data
     lt0 <- apply(UTRusage.short.data, 1, function(.ele) any(.ele<0))
     if(any(lt0)){
-        CDS <- utr3[utr3$id=="CDS"]
+        CDS <- utr3[utr3$feature=="CDS"]
         CDS <- CDS[CDS$transcript %in% unique(PDUItable$transcript[lt0])]
         CDSusage <- lastCDSusage(CDS, coverage, hugeData, BPPARAM)
         CDSusage.data <- do.call(rbind, CDSusage$data)

@@ -13,7 +13,7 @@ searchProximalCPs <- function(CPs, curr_UTR,
     flag <- dCPs$distalCP > window_size
     dCPs$length[flag] <- dCPs$length[flag] + dCPs$distalCP[flag]
     dCPs$type <- ifelse(flag, "novel distal", "novel proximal")
-    dCPs$type[grepl("proximalCP", dCPs$feature) & !flag] <- 
+    dCPs$type[grepl("proximalCP", dCPs$annotatedProximalCP) & !flag] <- 
         "annotated proximal"
     dist_apa <- function(d, id){
         ifelse(id>0, 
@@ -33,7 +33,7 @@ searchProximalCPs <- function(CPs, curr_UTR,
         }
     }, chr.cov.merge, dCPs$length, SIMPLIFY=FALSE)
     proximalCP <- sapply(curr_UTR, function(.ele) 
-        grepl("proximalCP", .ele[.ele$id=="utr3"]$feature[1]))
+        grepl("proximalCP", .ele[.ele$feature=="utr3"]$annotatedProximalCP[1]))
     Predicted_Proximal_APA <- vector("list", length=nrow(dCPs))
     fit_value <- vector("list", length=nrow(dCPs))
     dCPs$fit_value <- NA
@@ -41,7 +41,7 @@ searchProximalCPs <- function(CPs, curr_UTR,
         Predicted_Proximal_APA[proximalCP] <- 
             lapply(curr_UTR[proximalCP], function(.ele){
                 as.integer(unlist(strsplit(
-                    .ele[.ele$id=="utr3"]$feature[1], "_")[2]))
+                    .ele[.ele$feature=="utr3"]$annotatedProximalCP[1], "_")[2]))
             })
     }
     if(!is.na(cutEnd)){

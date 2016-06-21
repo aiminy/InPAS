@@ -1,6 +1,6 @@
 proximalAdj <- function(CPs, MINSIZE, PolyA_PWM, 
                         genome, classifier, classifier_cutoff, 
-                        shift_range, search_point_START){
+                        shift_range, search_point_START, step=1){
     dCPs <- CPs$dCPs
     flag <- CPs$flag
     seqnames <- as.character(dCPs$seqnames)
@@ -21,7 +21,8 @@ proximalAdj <- function(CPs, MINSIZE, PolyA_PWM,
                                               seqnames, starts, strands, 
                                               genome, 
                                               classifier, classifier_cutoff,
-                                              shift_range, search_point_START)
+                                              shift_range, search_point_START,
+                                              step)
     }
     CPs$Predicted_Proximal_APA[flag] <- idx.list[flag]
     

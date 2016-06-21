@@ -1,18 +1,18 @@
 proximalAdjByCleanUpdTSeq <- function(idx.list, cov_diff.list, 
                                       seqnames, starts, strands, 
                                       genome, classifier, classifier_cutoff,
-                                      shift_range, search_point_START){
+                                      shift_range, search_point_START, step=1){
     idx.len <- sapply(idx.list, length)
-    offsite <- 10^nchar(as.character(max(idx.len)))
+    offsite <- 10^nchar(as.character(max(idx.len)*ceiling(shift_range/step)))
     pos.matrix <- mapply(function(idx, start, strand, cov_diff, ID){
         if(length(idx)==0) return(NULL)
         if(is.na(idx[1])) return(NULL)
         idx.gp <- 1:length(idx)
-        if(shift_range>10){
+        if(shift_range>step){
             idx_lo <- idx - shift_range
             idx_up <- idx + shift_range
             idx <- mapply(function(a, b, c) 
-                unique(sort(c(seq(a, b, by=10), c))), 
+                unique(sort(c(seq(a, b, by=step), c))), 
                 idx_lo, idx_up, idx, SIMPLIFY=FALSE)
             idx.gp <- rep(1:length(idx_lo), sapply(idx, length))
             idx <- as.integer(unlist(idx))

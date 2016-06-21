@@ -35,7 +35,7 @@
         mean(c(0.05, 0.12, 0.2, 0.17) > cutoff_expdGene_cvgRate) > cutoff_expdGene_sampleRate
     if the coverage rates by base are: 0.05, 0.12, 0.07, 0.17,
     this gene will be count as un-expressed gene because
-        mean(c(0.05, 0.12, 0.07, 0.17) > cutoff_expdGene_cvgRate) < cutoff_expdGene_sampleRate
+        mean(c(0.05, 0.12, 0.07, 0.17) > cutoff_expdGene_cvgRate) <= cutoff_expdGene_sampleRate
     }
     \item{which}{
         an object of \link[GenomicRanges]{GRanges} or NULL. If it is not NULL,

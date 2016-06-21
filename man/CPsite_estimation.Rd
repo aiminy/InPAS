@@ -11,7 +11,7 @@ CPsite_estimation(chr.cov, utr3, MINSIZE, window_size, search_point_START,
 search_point_END, cutStart, cutEnd, adjust_distal_polyA_end, 
 background, z2s, coverage_threshold, long_coverage_threshold, 
 PolyA_PWM, classifier, classifier_cutoff, shift_range, 
-depth.weight, genome,
+depth.weight, genome, step=1,
 tmpfolder=NULL, silence=TRUE)
 }
 \arguments{
@@ -71,6 +71,9 @@ tmpfolder=NULL, silence=TRUE)
 }
   \item{genome}{
     a \link[BSgenome]{BSgenome} object
+}
+  \item{step}{
+    adjust step, default 1, means adjust by each base by cleanUpdTSeq.
 }
   \item{tmpfolder}{
     temp folder could save and reload the analysis data for resume analysis.

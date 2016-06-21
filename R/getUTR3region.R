@@ -34,14 +34,19 @@ getUTR3region <- function(.grs){
                             source=rep("short", length(short))))
         }
     }
-    gr$transcript <- .grs$transcript[1]
-    gr$gene <- .grs$gene[1]
-    gr$symbol <- .grs$symbol[1]
-    gr$fit_value <- .grs$fit_value[1]
-    gr$Predicted_Proximal_APA <- .grs$Predicted_Proximal_APA[1]
-    gr$Predicted_Distal_APA <- .grs$Predicted_Distal_APA[1]
-    gr$type <- .grs$type[1]
-    gr$utr3start <- .grs$utr3start[1]
-    gr$utr3end <- .grs$utr3end[1]
+#     gr$transcript <- .grs$transcript[1]
+#     gr$gene <- .grs$gene[1]
+#     gr$symbol <- .grs$symbol[1]
+#     gr$fit_value <- .grs$fit_value[1]
+#     gr$Predicted_Proximal_APA <- .grs$Predicted_Proximal_APA[1]
+#     gr$Predicted_Distal_APA <- .grs$Predicted_Distal_APA[1]
+#     gr$type <- .grs$type[1]
+#     gr$utr3start <- .grs$utr3start[1]
+#     gr$utr3end <- .grs$utr3end[1]
+    for(mc in colnames(mcols(.grs))){
+        if(mc!="exon"){
+            mcols(gr)[, mc] <- mcols(.grs)[1, mc]
+        }
+    }
     gr
 }

@@ -4,7 +4,7 @@ zScoreThrethold <- function(background, introns, totalCov, utr3, z=2){
     if(length(introns)<1)
         return(0)
     
-    curr_range <- utr3[utr3$id=="utr3"]
+    curr_range <- utr3[utr3$feature=="utr3"]
     
     seqnames <- unlist(sapply(totalCov, names))
     seqnames <- table(seqnames)

@@ -5,6 +5,7 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
              start with org and end with egSYMBOL.")
     exons <- ranges(GeneRegionTrack(txdb))
     exons$density <- NULL
+    colnames(mcols(exons))[colnames(mcols(exons))=="id"] <- "annotatedProximalCP"
     ## deal with duplicated exon id problem
     ## for normal one each exon id indicates an unique exon
     ## sometimes for connected utr5/CDS or CDS/utr3 or utr5/CDS/utr3
@@ -112,15 +113,20 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
              call.=FALSE)
     })
     symbol <- AnnotationDbi::mget(utr3$gene, env, ifnotfound=NA)
-    symbol <- sapply(symbol, paste, collapse=";")
+    symbol <- sapply(symbol, function(.ele) 
+        paste(unique(.ele[!is.na(.ele)]), collapse=";"))
     utr3$symbol <- symbol
     
     ##get last 3utr for each tx
     ## keep the last 3utr for each transcripts
     utr3.plus <- utr3[strand(utr3)=="+"]
     utr3.minus <- utr3[strand(utr3)=="-"]
-    utr3.plus <- utr3.plus[order(-start(utr3.plus))]
-    utr3.minus <- utr3.minus[order(end(utr3.minus))]
+    utr3.plus <- utr3.plus[order(as.character(seqnames(utr3.plus)), 
+                                 utr3.plus$transcript, 
+                                 -start(utr3.plus))]
+    utr3.minus <- utr3.minus[order(as.character(seqnames(utr3.minus)), 
+                                   utr3.minus$transcript,
+                                   end(utr3.minus))]
     ###get last 3utr
     utr3.plus <- utr3.plus[!duplicated(utr3.plus$transcript)]
     utr3.minus <- utr3.minus[!duplicated(utr3.minus$transcript)]
@@ -132,7 +138,7 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
         st <- start(gr)
         en <- end(gr)
         strand <- as.character(strand(gr))
-        f <- as.character(mcols(gr)[,f])
+        f <- paste(seq, as.character(mcols(gr)[,f]))
         seq <- split(seq, f)
         st <- split(st, f)
         en <- split(en, f)
@@ -149,18 +155,20 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
     }
     
     ## extract utr3 sharing same start positions from same gene 
-    if(any(is.na(utr3.last$symbol))) 
-        stop("unexpect happend at check gene symbol")
+    if(any(is.na(utr3.last$gene)|utr3.last$gene=="")) 
+        stop("unexpect happend at check gene")
     start.utr3.last <- 
-        paste(as.character(seqnames(utr3.last)), start(utr3.last))
-    end.utr3.last <- paste(as.character(seqnames(utr3.last)), end(utr3.last))
+        paste(as.character(seqnames(utr3.last)), start(utr3.last),
+              utr3.last$gene)
+    end.utr3.last <- paste(as.character(seqnames(utr3.last)), end(utr3.last),
+                           utr3.last$gene)
     start.dup <- 
         unique(start.utr3.last[duplicated(start.utr3.last) & 
                                    as.character(strand(utr3.last))=="+"])
     end.dup <- 
         unique(end.utr3.last[duplicated(end.utr3.last) & 
                                  as.character(strand(utr3.last))=="-"])
-    utr3.last$feature <- "unknown"
+    utr3.last$annotatedProximalCP <- "unknown"
     utr3.last.dup <- 
         utr3.last[(start.utr3.last %in% start.dup) | 
                       (end.utr3.last %in% end.dup)]
@@ -169,16 +177,19 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
             utr3.last[!((start.utr3.last %in% start.dup) | 
                             (end.utr3.last %in% end.dup))]
         dup.group.plus <- paste(as.character(seqnames(utr3.last.dup)), 
-                                start(utr3.last.dup))
+                                start(utr3.last.dup), utr3.last.dup$gene)
         dup.group.minus <- paste(as.character(seqnames(utr3.last.dup)), 
-                                 end(utr3.last.dup))
+                                 end(utr3.last.dup), utr3.last.dup$gene)
         dup.group <- ifelse(as.character(strand(utr3.last.dup))=="+", 
                             dup.group.plus, 
                             dup.group.minus)
         utr3.last.dup <- split(utr3.last.dup, dup.group)
         utr3.last.dup <- lapply(utr3.last.dup, function(.ele){
+            .ele <- unique(.ele)
+            len <- length(.ele)
+            if(len<=1) return(.ele)
             ## assum all the symbol should be same
-            if(length(unique(.ele$symbol))!=1) return(.ele[-(1:length(.ele))])
+            if(length(unique(.ele$gene))!=1) return(.ele[-(1:length(.ele))])
             str <- as.character(strand(.ele))[1]
             if(str=="+"){
                 .ele <- .ele[order(end(.ele))]
@@ -191,11 +202,11 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
             len <- length(.ele)
             if(len<=1) return(.ele)
             if(str=="+"){
-                .ele$feature <- paste("proximalCP", 
+                .ele$annotatedProximalCP <- paste("proximalCP", 
                                       paste(end(.ele)[-len], 
                                             collapse="_"), sep="_")
             }else{
-                .ele$feature <- paste("proximalCP", 
+                .ele$annotatedProximalCP <- paste("proximalCP", 
                                       paste(start(.ele)[-len], 
                                             collapse="_"), sep="_")
             }
@@ -211,7 +222,8 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
     
     ## mask 5UTR-CDS and any other region from last 3UTR
     non.utr3 <- getRange(exons.not.utr3.last, "transcript")
-    non.utr3 <- non.utr3[width(non.utr3)<8000] ##why 8000?
+    non.utr3 <- non.utr3[width(non.utr3)<10000] ##why 10000? because some gene is unbelivable huge.
+    non.utr3 <- reduce(c(non.utr3, reduce(exons.not.utr3.last)))
     
     removeMask <- function(gr, mask){
         mask.reduce <- reduce(mask)
@@ -226,6 +238,7 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
                           start(mask.ol)<=start(gr.ol)] <- "left"
             gr.ol$rel[end(mask.ol)>=end(gr.ol) & 
                           start(mask.ol)<=end(gr.ol)] <- "right"
+            # remove cover from left and right
             gr.ol$rel[end(mask.ol)>=end(gr.ol) & 
                           start(mask.ol)<=start(gr.ol)] <- "cover"
             end(gr.ol)[gr.ol$rel=="right"] <- 
@@ -268,7 +281,7 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
         }
     }
     utr3.last <- removeMask(utr3.last, non.utr3)
-
+    
     ## cut off overlaps of reverse 3UTR
     utr3.block <- threeUTRsByTranscript(txdb)
     utr3.block <- unlist(utr3.block)
@@ -331,20 +344,36 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
     ## get last of utr3 for each transcript
     utr3.last.plus <- ol.subject[strand(ol.subject)=="+"]
     utr3.last.minus <- ol.subject[strand(ol.subject)=="-"]
-    utr3.last.plus <- utr3.last.plus[order(-start(utr3.last.plus))]
-    utr3.last.minus <- utr3.last.minus[order(end(utr3.last.minus))]
+    utr3.last.plus <- utr3.last.plus[order(as.character(seqnames(utr3.last.plus)),
+                                           utr3.last.plus$transcript,
+                                           -start(utr3.last.plus))]
+    utr3.last.minus <- utr3.last.minus[order(as.character(seqnames(utr3.last.minus)),
+                                             utr3.last.minus$transcript,
+                                             end(utr3.last.minus))]
     ###get last 3utr
     utr3.last.plus <- utr3.last.plus[!duplicated(utr3.last.plus$transcript)]
     utr3.last.minus <- utr3.last.minus[!duplicated(utr3.last.minus$transcript)]
     utr3.last <- c(utr3.last.plus, utr3.last.minus)
+    
+    ## mark truncated 3UTR
+    utr3.last$truncated <- FALSE
+    utr3.last$truncated[as.character(strand(utr3.last))=="+" &
+                       end(utr3.last)<
+                       end(utr3.last.block[match(utr3.last$exon,
+                                                 utr3.last.block$exon)])] <- TRUE
+    utr3.last$truncated[as.character(strand(utr3.last))=="-" &
+                       start(utr3.last)>
+                       start(utr3.last.block[match(utr3.last$exon,
+                                                   utr3.last.block$exon)])] <- TRUE
+    
     ## handle same start
-    utr3.last.sameStart <- utr3.last[grepl("proximalCP", utr3.last$feature)]
-    utr3.last.unknown <- utr3.last[utr3.last$feature=="unknown"]
+    utr3.last.sameStart <- utr3.last[grepl("proximalCP", utr3.last$annotatedProximalCP)]
+    utr3.last.unknown <- utr3.last[utr3.last$annotatedProximalCP=="unknown"]
     utr3.last.sameStart.CP <- 
-        strsplit(gsub("proximalCP_", "", utr3.last.sameStart$feature), "_")
+        strsplit(gsub("proximalCP_", "", utr3.last.sameStart$annotatedProximalCP), "_")
     utr3.last.sameStart.Start <- start(utr3.last.sameStart)
     utr3.last.sameStart.End <- end(utr3.last.sameStart)
-    utr3.last.sameStart$feature <- mapply(function(cp, st, en){
+    utr3.last.sameStart$annotatedProximalCP <- mapply(function(cp, st, en){
         cp <- as.integer(cp)
         cp <- cp[cp>st & cp<en]
         if(length(cp)==0){
@@ -385,8 +414,8 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
         end(next.exons.gap)[
             wid & as.character(strand(next.exons.gap))=="-"] - MAX_EXONS_GAP
     ## lable the next.exons as special label
-    next.exons.gap$id <- "next.exon.gap"
-    utr3.clean$id <- "utr3"
+    next.exons.gap$feature <- "next.exon.gap"
+    utr3.clean$feature <- "utr3"
     
     ##get last CDS for compensation
     exons.CDS <- exons.old[exons.old$feature=="CDS"]
@@ -394,18 +423,22 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
     ## keep the last CDS for each transcripts
     CDS.plus <- CDS[strand(CDS)=="+"]
     CDS.minus <- CDS[strand(CDS)=="-"]
-    CDS.plus <- CDS.plus[order(-start(CDS.plus))]
-    CDS.minus <- CDS.minus[order(end(CDS.minus))]
+    CDS.plus <- CDS.plus[order(as.character(seqnames(CDS.plus)), 
+                               CDS.plus$transcript, 
+                               -start(CDS.plus))]
+    CDS.minus <- CDS.minus[order(as.character(seqnames(CDS.minus)), 
+                                 CDS.minus$transcript, 
+                                 end(CDS.minus))]
     ###get last CDS
     CDS.plus <- CDS.plus[!duplicated(CDS.plus$transcript)]
     CDS.minus <- CDS.minus[!duplicated(CDS.minus$transcript)]
     CDS.last <- c(CDS.plus, CDS.minus)
     CDS.last <- CDS.last[match(utr3.clean$transcript, CDS.last$transcript)]
     mcols(CDS.last) <- mcols(utr3.clean)
-    CDS.last$id <- "CDS"
+    CDS.last$feature <- "CDS"
     
     utr3.fixed <- c(utr3.clean, next.exons.gap, CDS.last)
     names(utr3.fixed) <- 
-        paste(utr3.fixed$exon, utr3.fixed$symbol, utr3.fixed$id, sep="|")
+        paste(utr3.fixed$exon, utr3.fixed$symbol, utr3.fixed$feature, sep="|")
     utr3.fixed
 }

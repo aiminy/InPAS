@@ -8,7 +8,7 @@ adjust distal CP sites by cleanUpdTSeq
 adjust distal CP sites by cleanUpdTSeq
 }
 \usage{
-distalAdj(distalCPs, classifier, classifier_cutoff, shift_range, genome)
+distalAdj(distalCPs, classifier, classifier_cutoff, shift_range, genome, step=1)
 }
 \arguments{
   \item{distalCPs}{
@@ -25,6 +25,9 @@ distalAdj(distalCPs, classifier, classifier_cutoff, shift_range, genome)
 }
   \item{genome}{
     a \link[BSgenome]{BSgenome} object
+}
+  \item{step}{
+    adjust step, default 1, means adjust by each base by cleanUpdTSeq.
 }
 }
 \value{

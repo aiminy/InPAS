@@ -1,5 +1,5 @@
 distalAdj <- function(distalCPs, classifier, classifier_cutoff,
-                      shift_range, genome){
+                      shift_range, genome, step=1){
     dCPs <- distalCPs$dCPs
     next.exon.gap <- distalCPs$next.exon.gap
     gap.cov <- mapply(function(gap, cp, ID, strand){
@@ -9,7 +9,7 @@ distalAdj <- function(distalCPs, classifier, classifier_cutoff,
             end <- ifelse(length(coor) > 2*shift_range, 
                           coor[length(coor)-2*shift_range], 
                           coor[1])
-            pos <- seq(start, end, by=ifelse(strand=="+", -10, 10))
+            pos <- seq(start, end, by=ifelse(strand=="+", -1*step, 1*step))
             idx <- match(pos, coor)
             cbind(pos, idx, ID)
         }else{

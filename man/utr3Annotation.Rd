@@ -17,7 +17,10 @@
     \item{MAX_EXONS_GAP}{maximul exon gap for distal CP site}
 }
 \value{
-    return an object of GRanges
+    return an object of GRanges with 7 metadata columns:
+    feature (utr3, next.exon.gap, CDS), annotatedProximalCP (unknown, proximalCP_<coordinate>), 
+    exon (<transcript id>_<index>), transcript, gene (entrez_id), symbol, 
+    truncated (logical).
 }
 \author{
     Jianhong Ou

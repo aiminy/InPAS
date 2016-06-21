@@ -61,7 +61,7 @@ inPAS <- function(bedgraphs, genome, utr3, txdb=NA,
     if(class(genome)!="BSgenome")
         stop("genome must be an object of BSgenome.")
     if(class(utr3)!="GRanges" | 
-           !all(utr3$id %in% c("utr3", "next.exon.gap", "CDS"))){
+           !all(utr3$feature %in% c("utr3", "next.exon.gap", "CDS"))){
         stop("utr3 must be output of function of utr3Annotation")
     }
     

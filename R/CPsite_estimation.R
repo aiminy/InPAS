@@ -4,7 +4,7 @@ CPsite_estimation <- function(chr.cov, utr3, MINSIZE, window_size,
                               background, z2s,
                               coverage_threshold, long_coverage_threshold, 
                               PolyA_PWM, classifier, classifier_cutoff, 
-                              shift_range, depth.weight, genome, 
+                              shift_range, depth.weight, genome, step=1,
                               tmpfolder=NULL, silence=TRUE){
     chr.cov <- chr.cov[sapply(chr.cov, mean)>0]
     if(length(chr.cov)==0){
@@ -13,8 +13,8 @@ CPsite_estimation <- function(chr.cov, utr3, MINSIZE, window_size,
     curr_UTR.gr <- utr3[names(chr.cov)]
     seqn <- as.character(seqnames(curr_UTR.gr))[1]
     
-    utr3.utr <- curr_UTR.gr[curr_UTR.gr$id=="utr3"]
-    utr3.gap <- curr_UTR.gr[curr_UTR.gr$id=="next.exon.gap"]
+    utr3.utr <- curr_UTR.gr[curr_UTR.gr$feature=="utr3"]
+    utr3.gap <- curr_UTR.gr[curr_UTR.gr$feature=="next.exon.gap"]
     co <- countOverlaps(utr3.gap, utr3.utr, maxgap=1, ignore.strand=TRUE)
     utr3.gap <- utr3.gap[co>1]
     curr_UTR.gr$conn_next_utr3 <- 
@@ -35,7 +35,7 @@ CPsite_estimation <- function(chr.cov, utr3, MINSIZE, window_size,
                     paste(.property, .posList, sep="_SEP_")
                 .covList
             }, chr.utr3TotalCov, start(.UTR), end(.UTR), 
-            .UTR$id, SIMPLIFY=FALSE)
+            .UTR$feature, SIMPLIFY=FALSE)
         chr.utr3TotalCov <- do.call(rbind, chr.utr3TotalCov)
         if(as.character(strand(.UTR))[1] == "-"){##reverse the negative strand
             chr.utr3TotalCov <- 
@@ -105,7 +105,7 @@ CPsite_estimation <- function(chr.cov, utr3, MINSIZE, window_size,
             if(CPsite_search_step < 2){
                 CPsite_search_step <- 2
                 chr.abun <- distalAdj(chr.abun, classifier, classifier_cutoff,
-                                      shift_range, genome)
+                                      shift_range, genome, step)
                 if(!is.null(tmpfolder)) 
                     save(list=c("chr.abun", "CPsite_search_step"),
                          file=file.path(tmpfolder, seqn))
@@ -136,7 +136,7 @@ CPsite_estimation <- function(chr.cov, utr3, MINSIZE, window_size,
                 CPsite_search_step <- 4
                 chr.abun <- proximalAdj(chr.abun, MINSIZE, PolyA_PWM, 
                                         genome, classifier, classifier_cutoff, 
-                                        shift_range, search_point_START)
+                                        shift_range, search_point_START, step)
                 if(!is.null(tmpfolder)) 
                     save(list=c("chr.abun", "CPsite_search_step"),
                          file=file.path(tmpfolder, seqn))

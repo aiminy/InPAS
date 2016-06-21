@@ -27,7 +27,7 @@ covThreshold <- function(coverage, genome, txdb, utr3,
     intronRegion <- intronRegion(txdb)
     intronRegion <- intronRegion[seqnames(intronRegion)==chr]
     utr3Chr1Region <- utr3[seqnames(utr3)==chr]
-    utr3Chr1Region <- utr3Chr1Region[utr3Chr1Region$id=="utr3"]
+    utr3Chr1Region <- utr3Chr1Region[utr3Chr1Region$feature=="utr3"]
     covBg<-function(.cvg, start, end){
         view <- Views(.cvg, start, end)#
         view <- viewApply(view, function(.ele) as.integer(.ele))
