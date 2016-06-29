@@ -14,8 +14,6 @@
         background=c("same_as_long_coverage_threshold", 
                      "1K", "5K", "10K", "50K"),
         txdb=NA,
-        gcCompensation=NA, mappabilityCompensation=NA, 
-        FFT=FALSE, fft.sm.power=20, 
         PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, step=1, 
         shift_range=window_size,
         BPPARAM=NULL, tmpfolder=NULL, silence=TRUE)
@@ -44,11 +42,6 @@
         long_coverage_threshold, that transcript will be dropped.}
     \item{background}{the range for calculating cutoff threshold of local background}
     \item{txdb}{an object of \link[GenomicFeatures]{TxDb}}
-    \item{gcCompensation}{GC content compensation vector}
-    \item{mappabilityCompensation}{mappability compensation vector}
-    \item{FFT}{use Fast Fourier Transform Algorithm to smooth the data or not. 
-        default: FALSE}
-    \item{fft.sm.power}{if FFT is TRUE, the frequency should be removed}
     \item{PolyA_PWM}{Position Weight Matrix of polyA}
     \item{classifier}{An object of class 
         \code{"\link[cleanUpdTSeq]{PASclassifier}"}}

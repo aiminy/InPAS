@@ -5,12 +5,14 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
                     coverage_threshold=5, long_coverage_threshold=2, 
                     background=c("same_as_long_coverage_threshold", 
                                  "1K", "5K", "10K", "50K"),
-                    txdb=NA,
-                    gcCompensation=NA, mappabilityCompensation=NA, 
-                    FFT=FALSE, fft.sm.power=20, 
+                    txdb=NA, 
                     PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, step=1,
                     shift_range=window_size, BPPARAM=NULL, tmpfolder=NULL,
                     silence=TRUE){
+    gcCompensation=NA
+    mappabilityCompensation=NA
+    FFT=FALSE
+    fft.sm.power=20
     if(!is.na(PolyA_PWM)[1]){
         if(class(PolyA_PWM)!="matrix") stop("PolyA_PWM must be matrix")
         if(any(rownames(PolyA_PWM)!=c("A", "C", "G", "T"))) 

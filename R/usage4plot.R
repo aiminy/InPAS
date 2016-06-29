@@ -1,7 +1,9 @@
 usage4plot <- function(gr, coverage, proximalSites, genome, 
-                       groupList=NULL, 
-                       gcCompensation=NA, mappabilityCompensation=NA, 
-                       FFT=FALSE, fft.sm.power=20){
+                       groupList=NULL){ 
+    gcCompensation=NA
+    mappabilityCompensation=NA 
+    FFT=FALSE
+    fft.sm.power=20
     if(class(gr)!="GRanges") stop("gr must be an object of GRanges")
     if(is.null(names(gr))) 
         names(gr) <- 

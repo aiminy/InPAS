@@ -17,9 +17,7 @@ inPAS(bedgraphs, genome, utr3, txdb=NA,
       cutStart=window_size, cutEnd=0, 
       coverage_threshold=5, long_coverage_threshold=2, 
       background=c("same_as_long_coverage_threshold", 
-                   "1K", "5K", "10K", "50K"),
-      gcCompensation=NA, mappabilityCompensation=NA, 
-      FFT=FALSE, fft.sm.power=20, 
+                   "1K", "5K", "10K", "50K"), 
       adjust_distal_polyA_end=TRUE, 
       PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, 
       shift_range=window_size, 
@@ -70,11 +68,6 @@ inPAS(bedgraphs, genome, utr3, txdb=NA,
     \item{long_coverage_threshold}{cutoff threshold for coverage in thre 
         region of long form}
     \item{background}{the range for calculating cutoff threshold of local background}
-    \item{gcCompensation}{GC content compensation vector}
-    \item{mappabilityCompensation}{mappability compensation vector}
-    \item{FFT}{use Fast Fourier Transform Algorithm to smooth the data or not. 
-        default: FALSE}
-    \item{fft.sm.power}{if FFT is TRUE, the frequency should be removed}
     \item{adjust_distal_polyA_end}{If true, adjust distal polyA end by 
         \link[cleanUpdTSeq]{cleanUpdTSeq}}
     \item{PolyA_PWM}{Position Weight Matrix of polyA}

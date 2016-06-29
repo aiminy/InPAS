@@ -7,9 +7,7 @@
     prepare coverage data and fitting data for plot
 }
 \usage{
-    usage4plot(gr, coverage, proximalSites, genome, groupList, 
-               gcCompensation=NA, mappabilityCompensation=NA, 
-               FFT=FALSE, fft.sm.power=20)
+    usage4plot(gr, coverage, proximalSites, genome, groupList)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,10 +16,6 @@
     \item{proximalSites}{proximal sites}
     \item{genome}{an object of \link[BSgenome]{BSgenome}}
     \item{groupList}{the list of sample names}
-    \item{gcCompensation}{GC content compensation vector}
-    \item{mappabilityCompensation}{mappability compensation vector}
-    \item{FFT}{use FFT to smooth the data or not. default: FALSE}
-    \item{fft.sm.power}{if FFT is TRUE, the frequency should be removed}
 }
 \value{
     Formal class 'GRanges' [package "GenomicRanges"] with metadata: 
