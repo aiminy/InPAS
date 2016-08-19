@@ -5,6 +5,7 @@ CPsite_estimation <- function(chr.cov, utr3, MINSIZE, window_size,
                               coverage_threshold, long_coverage_threshold, 
                               PolyA_PWM, classifier, classifier_cutoff, 
                               shift_range, depth.weight, genome, step=1,
+                              two_way=FALSE,
                               tmpfolder=NULL, silence=TRUE){
     chr.cov <- chr.cov[sapply(chr.cov, mean)>0]
     if(length(chr.cov)==0){
@@ -121,7 +122,8 @@ CPsite_estimation <- function(chr.cov, utr3, MINSIZE, window_size,
             chr.abun <- searchProximalCPs(chr.abun, curr_UTR, 
                                           window_size, MINSIZE,
                                           cutEnd, 
-                                          search_point_START, search_point_END)
+                                          search_point_START, search_point_END,
+                                          two_way)
             if(!is.null(tmpfolder)) 
                 save(list=c("chr.abun", "CPsite_search_step"),
                      file=file.path(tmpfolder, seqn))

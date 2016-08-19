@@ -10,7 +10,8 @@ search proximal CPsites
 searchProximalCPs(CPs, curr_UTR, window_size, 
                 MINSIZE, cutEnd, 
                 search_point_START, 
-                search_point_END)
+                search_point_END,
+                two_way=FALSE)
 }
 \arguments{
   \item{CPs}{
@@ -34,7 +35,10 @@ searchProximalCPs(CPs, curr_UTR, window_size,
 }
   \item{search_point_END}{
     end point for searching
-}        
+}
+  \item{two_way}{
+    Search the proximal site from both direction or not.
+}
 }
 
 \value{

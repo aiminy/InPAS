@@ -15,6 +15,7 @@
                      "1K", "5K", "10K", "50K"),
         txdb=NA,
         PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, step=1, 
+        two_way=FALSE,
         shift_range=window_size,
         BPPARAM=NULL, tmpfolder=NULL, silence=TRUE)
 }
@@ -52,6 +53,7 @@
         putative pA site with prob.1 > 0.5 to the True class (1), 
         and any putative pA site with prob.1 <= 0.5 as False (0).}
     \item{step}{adjust step, default 1, means adjust by each base by cleanUpdTSeq.}
+    \item{two_way}{Search the proximal site from both direction or not.}
     \item{shift_range}{the shift range for polyA site searching}
     \item{BPPARAM}{An optional \code{\link[BiocParallel]{BiocParallelParam}} 
         instance determining the parallel back-end to be used during 

@@ -1,7 +1,9 @@
 searchProximalCPs <- function(CPs, curr_UTR, 
                               window_size, MINSIZE,
                               cutEnd, 
-                              search_point_START, search_point_END){
+                              search_point_START, 
+                              search_point_END,
+                              two_way=FALSE){
     dCPs <- CPs$dCPs
     chr.cov.merge <- CPs$chr.cov.merge
     next.exon.gap <- CPs$next.exon.gap
@@ -88,37 +90,40 @@ searchProximalCPs <- function(CPs, curr_UTR,
             idx
         }, fit_value[flag], search_point_end[flag], saved.id[flag], 
         SIMPLIFY=FALSE)
-    ##reverse
-    fit_value_rev[flag] <- mapply(function(.ele, search_point_END){
-        nr <- nrow(.ele)
-        fos <- apply(.ele[nr:1,,drop=FALSE], 2, optimalSegmentation, 
-                     search_point_START=nr-search_point_END, 
-                     search_point_END=nr-search_point_START)
-        cov_diff <- sapply(fos, "[[", "cov_diff")
-        cov_diff <- rowMeans(cov_diff)
-        cov_diff <- cov_diff[length(cov_diff):1]
-    }, chr.cov.merge[flag], search_point_end[flag], SIMPLIFY=FALSE)
-    Predicted_Proximal_APA_rev[flag] <- 
-        mapply(function(cov_diff, search_point_END, savedID){
-            idx <- valley(cov_diff, search_point_START, 
-                          search_point_END, n=5, savedID=savedID)
-            if(search_point_START<MINSIZE) 
-                idx <- idx[idx!=search_point_START]
-            idx
-        }, fit_value_rev[flag], search_point_end[flag], saved.id[flag], 
-        SIMPLIFY=FALSE)
-    ##combine forward and reverse
-    Predicted_Proximal_APA[flag] <- mapply(function(fv, idx, fv_rev, idx_rev){
-        ## sort the results
-        f <- fv[idx]
-        names(f) <- idx
-        r <- fv_rev[idx_rev]
-        names(r) <- idx_rev
-        fr <- sort(c(f, r), decreasing = FALSE)
-        as.numeric(names(fr))
-    }, fit_value[flag], Predicted_Proximal_APA[flag], 
-    fit_value_rev[flag], Predicted_Proximal_APA_rev[flag], 
-    SIMPLIFY = FALSE)
+    if(two_way){
+        ##reverse
+        fit_value_rev[flag] <- mapply(function(.ele, search_point_END){
+            nr <- nrow(.ele)
+            fos <- apply(.ele[nr:1,,drop=FALSE], 2, optimalSegmentation, 
+                         search_point_START=nr-search_point_END, 
+                         search_point_END=nr-search_point_START)
+            cov_diff <- sapply(fos, "[[", "cov_diff")
+            cov_diff <- rowMeans(cov_diff)
+            cov_diff <- cov_diff[length(cov_diff):1]
+        }, chr.cov.merge[flag], search_point_end[flag], SIMPLIFY=FALSE)
+        Predicted_Proximal_APA_rev[flag] <- 
+            mapply(function(cov_diff, search_point_END, savedID){
+                idx <- valley(cov_diff, search_point_START, 
+                              search_point_END, n=5, savedID=savedID)
+                if(search_point_START<MINSIZE) 
+                    idx <- idx[idx!=search_point_START]
+                idx
+            }, fit_value_rev[flag], search_point_end[flag], saved.id[flag], 
+            SIMPLIFY=FALSE)
+        ##combine forward and reverse
+        Predicted_Proximal_APA[flag] <- mapply(function(fv, idx, fv_rev, idx_rev){
+            ## sort the results
+            f <- fv[idx]
+            names(f) <- idx
+            idx_rev <- idx_rev[!idx_rev %in% idx]
+            r <- fv_rev[idx_rev]
+            names(r) <- idx_rev
+            fr <- sort(c(f, r), decreasing = FALSE)
+            as.numeric(names(fr))[1:min(length(fr), 6)]
+        }, fit_value[flag], Predicted_Proximal_APA[flag], 
+        fit_value_rev[flag], Predicted_Proximal_APA_rev[flag], 
+        SIMPLIFY = FALSE)
+    }
     
     idx1 <- lapply(Predicted_Proximal_APA, `[`, 1)
     idx1[sapply(idx1, length)==0] <- NA

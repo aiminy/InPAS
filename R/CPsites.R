@@ -7,6 +7,7 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
                                  "1K", "5K", "10K", "50K"),
                     txdb=NA, 
                     PolyA_PWM=NA, classifier=NA, classifier_cutoff=.8, step=1,
+                    two_way=FALSE,
                     shift_range=window_size, BPPARAM=NULL, tmpfolder=NULL,
                     silence=TRUE){
     gcCompensation=NA
@@ -100,6 +101,7 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
                      depth.weight=depth.weight, 
                      genome=genome,
                      step=step,
+                     two_way=two_way,
                      tmpfolder=tmpfolder,
                      silence=silence)
     }else{
@@ -121,6 +123,7 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
                    depth.weight=depth.weight, 
                    genome=genome,
                    step=step,
+                   two_way=two_way,
                    tmpfolder=tmpfolder,
                    silence=silence)
     }

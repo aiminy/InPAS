@@ -11,7 +11,7 @@ CPsite_estimation(chr.cov, utr3, MINSIZE, window_size, search_point_START,
 search_point_END, cutStart, cutEnd, adjust_distal_polyA_end, 
 background, z2s, coverage_threshold, long_coverage_threshold, 
 PolyA_PWM, classifier, classifier_cutoff, shift_range, 
-depth.weight, genome, step=1,
+depth.weight, genome, step=1, two_way=FALSE,
 tmpfolder=NULL, silence=TRUE)
 }
 \arguments{
@@ -74,6 +74,9 @@ tmpfolder=NULL, silence=TRUE)
 }
   \item{step}{
     adjust step, default 1, means adjust by each base by cleanUpdTSeq.
+}
+  \item{two_way}{
+    Search the proximal site from both direction or not.
 }
   \item{tmpfolder}{
     temp folder could save and reload the analysis data for resume analysis.
