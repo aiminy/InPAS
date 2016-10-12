@@ -12,20 +12,29 @@ PAscore2 <- function(seqname, pos, str, idx, idx.gp,
     coor.id <- !duplicated(coor)
     gr$duplicated <- gr$id[coor.id][match(coor, coor[coor.id])]
     gr.s <- gr[coor.id]
-    testSet.NaiveBayes <- 
-        buildFeatureVector(gr.s, BSgenomeName = genome, 
-                           upstream = classifier@info@upstream,
-                           downstream = classifier@info@downstream, 
-                           wordSize = classifier@info@wordSize, 
-                           alphabet=classifier@info@alphabet,
-                           sampleType = "unknown",replaceNAdistance = 30, 
-                           method = "NaiveBayes", ZeroBasedIndex = 1, 
-                           fetchSeq = TRUE)
-    suppressMessages(pred.prob.test <- 
-                         predictTestSet(testSet.NaiveBayes=testSet.NaiveBayes, 
-                                        classifier=classifier, 
-                                        outputFile=NULL, 
-                                        assignmentCutoff=classifier_cutoff))
+    pred.prob.test <- do.call(rbind, 
+                              lapply(split(gr.s, 
+                                           rep(1:ceiling(length(gr.s)/1000), 
+                                               each=1000)[1:length(gr.s)]), 
+                                            function(.gr.s){
+        testSet.NaiveBayes <- 
+            buildFeatureVector(.gr.s, BSgenomeName = genome, 
+                               upstream = classifier@info@upstream,
+                               downstream = classifier@info@downstream, 
+                               wordSize = classifier@info@wordSize, 
+                               alphabet=classifier@info@alphabet,
+                               sampleType = "unknown",replaceNAdistance = 30, 
+                               method = "NaiveBayes", ZeroBasedIndex = 1, 
+                               fetchSeq = TRUE)
+        suppressMessages(.pred.prob.test <- 
+                             predictTestSet(
+                                 testSet.NaiveBayes=testSet.NaiveBayes,
+                                 classifier=classifier,
+                                 outputFile=NULL, 
+                                 assignmentCutoff=classifier_cutoff))
+        .pred.prob.test
+    }))
+    rownames(pred.prob.test) <- NULL
     pred.prob.test <- pred.prob.test[match(names(gr.s), 
                                            pred.prob.test$PeakName), , 
                                      drop=FALSE]
