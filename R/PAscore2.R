@@ -14,8 +14,8 @@ PAscore2 <- function(seqname, pos, str, idx, idx.gp,
     gr.s <- gr[coor.id]
     pred.prob.test <- do.call(rbind, 
                               lapply(split(gr.s, 
-                                           rep(1:ceiling(length(gr.s)/1000), 
-                                               each=1000)[1:length(gr.s)]), 
+                                           rep(1:ceiling(length(gr.s)/100000), 
+                                               each=100000)[1:length(gr.s)]), 
                                             function(.gr.s){
         testSet.NaiveBayes <- 
             buildFeatureVector(.gr.s, BSgenomeName = genome, 
