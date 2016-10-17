@@ -1,0 +1,35 @@
+import(Biobase)
+import(methods)
+import(S4Vectors)
+importFrom(AnnotationDbi, mget)
+import(limma)
+import(IRanges)
+importFrom(GenomeInfoDb, seqlengths, seqlevelsStyle, mapSeqlevels)
+import(GenomicRanges)
+import(GenomicFeatures)
+importFrom(BSgenome, getSeq, matchPWM)
+import(BiocParallel)
+importFrom(Gviz, GeneRegionTrack)
+importFrom(cleanUpdTSeq, buildFeatureVector, predictTestSet)
+importFrom(seqinr, s2c, GC)
+importFrom(depmixS4, depmix, fit, posterior, getpars)
+importFrom(preprocessCore, colSummarizeAvg, colSummarizeMedian, 
+           normalize.quantiles, normalize.quantiles.robust)
+exportClass("UTR3eSet")
+exportMethods("$", "$<-")
+export(coverageFromBedGraph,
+       coverageRate,
+       CPsites,
+       filterRes,
+       fisher.exact.test,
+       getUTR3eSet,
+       inPAS,
+       limmaAnalyze,
+       prepare4GSEA,
+       singleGroupAnalyze,
+       singleSampleAnalyze,
+       testUsage,
+       utr3Annotation,
+       utr3UsageEstimation,
+       usage4plot
+       )

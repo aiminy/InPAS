@@ -1,0 +1,136 @@
+CHANGES IN VERSION 1.5.7
+------------------------
+NEW FEATURE
+    o decrease the memory to run InPAS.
+    
+CHANGES IN VERSION 1.5.6
+------------------------
+NEW FEATURE
+    o Add a parameter to control search the proximal site from both 
+    direction or not.
+    
+CHANGES IN VERSION 1.5.5
+------------------------
+NEW FEATURE
+    o search the proximal site from both direction.
+    
+CHANGES IN VERSION 1.5.4
+------------------------
+NEW FEATURE
+    o Categorize novel distal events into "novel distal" and "truncated distal"
+    
+BUG FIXES
+    o fix the bug in proximalAdjByCleanUpdTSeq.
+    
+CHANGES IN VERSION 1.5.1
+------------------------
+NEW FEATURE
+    o new function coverageRate for quality control.
+BUG FIXES
+    o fix the error when not all the seqnames is in bedgraphs for CPsites.
+
+CHANGES IN VERSION 1.3.2
+------------------------
+BUG FIXES
+    o re-run coverage when worker is died for bpapply
+
+CHANGES IN VERSION 1.3.1
+------------------------
+
+    o suppress the error not needed in phmm
+
+CHANGES IN VERSION 1.1.9
+------------------------
+
+    o update documentation
+
+CHANGES IN VERSION 1.1.8
+------------------------
+BUG FIXES
+    o improve the distCP site search.
+
+CHANGES IN VERSION 1.1.7
+------------------------
+BUG FIXES
+    o typo "novel distal".
+
+CHANGES IN VERSION 1.1.6
+------------------------
+BUG FIXES
+    o fix the seqlevels style issue.
+
+CHANGES IN VERSION 1.1.5
+------------------------
+BUG FIXES
+    o improve limmaAnalyze algorithm
+
+CHANGES IN VERSION 1.1.4
+------------------------
+BUG FIXES
+    o improve the CP sites adjustment algorithm.
+
+CHANGES IN VERSION 1.1.3
+------------------------
+BUG FIXES
+
+    o shorten the CPU time of CP sites prediction
+
+CHANGES IN VERSION 1.1.2
+------------------------
+BUG FIXES
+
+    o update description
+
+CHANGES IN VERSION 1.1.1
+------------------------
+BUG FIXES
+
+    o fix the bug in FFT smooth when length of 3UTR is shorter than smooth power
+
+
+CHANGES IN VERSION 0.99.7
+------------------------
+NEW FEATURES
+
+    o compensation by last CDS but not by ratio.
+
+
+CHANGES IN VERSION 0.99.6
+------------------------
+BUG FIXES
+
+    o fix the bug in utr3UsageEstimation in calculating of PDUI
+
+CHANGES IN VERSION 0.99.5
+------------------------
+BUG FIXES
+
+    o fix the bug in utr3Annotation when multiple transcripts sharing same
+    transcript name by Gviz::GeneRegionTrack
+
+CHANGES IN VERSION 0.99.4
+------------------------
+BUG FIXES
+
+    o fix the bug in documentation of utr3Annotation
+
+CHANGES IN VERSION 0.99.3
+------------------------
+BUG FIXES
+
+    o fix the output ranges from short form to whole 3UTR
+
+CHANGES IN VERSION 0.99.2
+------------------------
+BUG FIXES
+
+    o clear warnings when run check. 
+      Warning: multiple methods tables found for 'species'
+      Warning: multiple methods tables found for ‘organism’
+
+
+CHANGES IN VERSION 0.99.1
+------------------------
+BUG FIXES
+
+    o errors when run BioCheck. import all the package should be import.
