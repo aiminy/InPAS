@@ -7,6 +7,13 @@ CPsite_estimation <- function(chr.cov, utr3, MINSIZE, window_size,
                               shift_range, depth.weight, genome, step=1,
                               two_way=FALSE,
                               tmpfolder=NULL, silence=TRUE){
+    if(class(chr.cov)=="character"){
+        chr.cov <- readRDS(file = chr.cov)
+        if(class(chr.cov)!="list"){
+            stop("Something wrong when load big data. ", 
+                 "Maybe the tempfile is broken!")
+        }
+    }
     chr.cov <- chr.cov[sapply(chr.cov, mean)>0]
     if(length(chr.cov)==0){
         return(NULL)

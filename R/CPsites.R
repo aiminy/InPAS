@@ -72,13 +72,41 @@ CPsites <- function(coverage, groupList=NULL, genome, utr3, window_size=100,
         totalCov <- totalCoverage(coverage, genome, hugeData, groupList)
     }
     if(!silence) message("total coverage ... done.")
-    utr3TotalCov <- 
-        UTR3TotalCoverage(utr3, totalCov, 
-                          gcCompensation, mappabilityCompensation, 
-                          FFT=FFT, fft.sm.power=fft.sm.power)
-    if(!silence) message("coverage in 3utr ... done.")
     z2s <- zScoreThrethold(background, introns, totalCov, utr3)   
     if(!silence) message("backgroud around 3utr ... done.")
+    if(!is.null(tmpfolder) && 
+       file.exists(file.path(tmpfolder, "utr3TotalCov.rds"))){
+        utr3TotalCov <- readRDS(file.path(tmpfolder, "utr3TotalCov.rds"))
+    }else{
+        utr3TotalCov <- 
+            UTR3TotalCoverage(utr3, totalCov, 
+                              gcCompensation, mappabilityCompensation, 
+                              FFT=FFT, fft.sm.power=fft.sm.power)
+        objSize <- as.numeric(object.size(utr3TotalCov))/(1024^3)
+        if(objSize>4){
+            ## huge data, try to save the data and load later
+            utr3TotalCov <- mapply(function(.ele, .name){
+                if(!is.null(tmpfolder)){
+                    utr3TotalCov.tmpfile <- file.path(tmpfolder, 
+                                                      paste0("utr3TotalCov.", 
+                                                             .name))
+                }else{
+                    utr3TotalCov.tmpfile <- tempfile()
+                }
+                saveRDS(.ele, utr3TotalCov.tmpfile, compress = "xz")
+                if(!silence) message("save utr3TotalCov", .name, 
+                                     "at",  utr3TotalCov.tmpfile,
+                                     " ... done.")
+                utr3TotalCov.tmpfile
+            }, utr3TotalCov, names(utr3TotalCov), SIMPLIFY = FALSE)
+            if(!is.null(tmpfolder)){
+                saveRDS(utr3TotalCov, file.path(tmpfolder, "utr3TotalCov.rds"))
+            }
+        }
+    }
+    if(!silence) message("coverage in 3utr ... done.")
+    ## memory issue
+    rm(list=c("coverage", "totalCov"))
     
     if(!is.null(BPPARAM)){
         shorten_UTR_estimation <- 

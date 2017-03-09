@@ -1,3 +1,8 @@
+CHANGES IN VERSION 1.7.2
+------------------------
+BUG FIXES
+    o Fix the memory trap if the dataset is huge when call CPsites.
+
 CHANGES IN VERSION 1.7.1
 ------------------------
 BUG FIXES
