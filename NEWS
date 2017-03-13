@@ -1,3 +1,8 @@
+CHANGES IN VERSION 1.7.3
+------------------------
+BUG FIXES
+    o remove the code modified from voom. And directly use diffSplice.
+    
 CHANGES IN VERSION 1.7.2
 ------------------------
 BUG FIXES

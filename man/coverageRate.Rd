@@ -45,10 +45,10 @@
 }
 \value{
     return a datafrom with colnames : 
-        gene.coverage.rate, 
-        expressed.gene.coverage.rate, 
-        UTR3.coverage.rate,
-        UTR3.expressed.gene.subset.coverage.rate
+        gene.coverage.rate: coverage per base for all genes, 
+        expressed.gene.coverage.rate: coverage per base for expressed genes, 
+        UTR3.coverage.rate: coverage per base for all 3' UTRs,
+        UTR3.expressed.gene.subset.coverage.rate: coverage per base for 3' UTRs of expressed genes.
     and rownames:
         the names of coverage.
 }
