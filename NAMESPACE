@@ -1,3 +1,7 @@
+importFrom("stats", "BIC", "fft", "fisher.test", "loess.smooth",
+           "model.matrix", "p.adjust", "pnorm", "poisson", "t.test")
+importFrom("utils", "object.size", "read.delim", "read.table",
+           "write.table")
 import(Biobase)
 import(methods)
 import(S4Vectors)

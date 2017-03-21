@@ -104,6 +104,9 @@ utr3Annotation <- function(txdb, orgDbSYMBOL, MAX_EXONS_GAP=10000){
     exons <- exons[exons$feature!="ncRNA"]
     utr3.all <- exons[exons$feature=="utr3"]
     utr3 <- utr3.all[!is.na(utr3.all$gene)]
+    if(length(utr3)<1){
+        stop("no useful 3' UTR availble.")
+    }
     tryCatch(env<-get(orgDbSYMBOL),error = function(e){
         stop(paste("Annotation database ",
                    orgDbSYMBOL,

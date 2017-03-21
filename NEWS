@@ -1,3 +1,8 @@
+CHANGES IN VERSION 1.7.4
+------------------------
+BUG FIXES
+    o fix the bug if there is NA values for proximal site to be adjusted.
+    
 CHANGES IN VERSION 1.7.3
 ------------------------
 BUG FIXES

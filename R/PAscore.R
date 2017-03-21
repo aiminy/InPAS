@@ -1,4 +1,5 @@
 PAscore <- function(seqname, pos, str, idx, PWM, genome, ups=50, dws=50){
+    pos <- pos[!is.na(pos)]
     if(length(pos)<1){
         return(NULL)
     }
