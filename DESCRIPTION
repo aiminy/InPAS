@@ -1,13 +1,14 @@
 Package: InPAS
 Type: Package
 Title: Identification of Novel alternative PolyAdenylation Sites (PAS)
-Version: 1.7.4
-Date: 2017-03-21
+Version: 1.7.5
+Date: 2017-04-10
 Authors@R: c(person("Jianhong Ou", "Developer", role = c("aut", "cre"),
         email = "jianhong.ou@umassmed.edu"), person("Lihua Julie Zhu",
         "Developer", role = "aut", email = "Julie.Zhu@umassmed.edu"))
 Author: Jianhong Ou, Sung Mi Park, Michael R. Green and Lihua Julie Zhu
-Maintainer: Jianhong Ou <jianhong.ou@umassmed.edu>
+Maintainer: Jianhong Ou <jianhong.ou@umassmed.edu>, 
+            Lihua Julie Zhu <Julie.Zhu@umassmed.edu>
 Description: Alternative polyadenylation (APA) is one of the important 
              post-transcriptional regulation mechanisms which occurs in 
              most human genes. InPAS facilitates the discovery of novel 
